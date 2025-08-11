@@ -13,6 +13,7 @@ struct AgeView: View {
                 customPicker
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+            nextButton
         }
         .padding(55)
         .background(.backmain)
@@ -27,6 +28,26 @@ struct AgeView: View {
         }
     }
     
+    private var nextButton: some View {
+        VStack{
+            Spacer()
+            HStack{
+                Spacer()
+                Button(action: {
+                    Task {
+                        await viewModel.saveProfile()
+                    }
+                }) {
+                    Text("Next")
+                    Image(systemName: "chevron.right")
+                }
+                .font(.system(size: 18, weight: .thin))
+                .foregroundColor(.currentday)
+            }
+        }
+        .padding(.bottom, 100)
+    }
+    
     private var divider: some View {
         GeometryReader { geo in
             ZStack {
@@ -34,7 +55,7 @@ struct AgeView: View {
                     .position(x: geo.size.width / 2, y: geo.size.height / 2)
                 HorizontalDottedLine(dotSize: 3, spacing: 3)
                     .position(x: geo.size.width / 2, y: geo.size.height / 2)
-                    .padding(.top, -75)
+                    .padding(.top, -70)
             }
         }
     }
@@ -46,13 +67,18 @@ struct AgeView: View {
 
 struct CustomPicker: View {
     @Binding var selectedValue: Int
+    
     let range: [Int]
+    
     @State private var dragOffset: CGFloat = 0
-    @State private var isDragging = false
-    @State private var timer: Timer?
+    @State private var lastOffset: CGFloat = 0
+    
+    private let cellHeight: CGFloat = 45
+    private let spacing: CGFloat = 20
     
     var body: some View {
         GeometryReader { geo in
+            let itemStride = self.cellHeight + self.spacing
             VStack(spacing: 20) {
                 ForEach(range, id: \.self) { value in
                     GeometryReader { innerGeo in
@@ -69,48 +95,31 @@ struct CustomPicker: View {
                             .scaleEffect(scaleEffect(for: distance))
                             .opacity(opacity(for: distance))
                             .frame(width: geo.size.width, height: 50)
-                            .animation(.easeInOut(duration: 0.2))
                     }
                     .frame(height: 45)
                 }
             }
             .padding(.vertical, geo.size.height / 2 - 20)
             .offset(y: dragOffset)
-            .onReceive(timer ?? Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()) { _ in
-                updateSelectedValue(geometry: geo)
-            }
             .gesture(
                 DragGesture()
                     .onChanged { gesture in
-                        isDragging = true
-                        dragOffset = gesture.translation.y
-                        startTimer()
-                        
+                        dragOffset = lastOffset + gesture.translation.height
                     }
                     .onEnded { _ in
-                        stopTimer()
-                        snapToNearestValue()
-                        
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                            isDragging = false
-                            playTickSound()
+                        let rawIndex = -dragOffset / itemStride
+                        let snapped = Int(round(rawIndex))
+                        let clamped = min(max(snapped, 0), range.count - 1)
+                        withAnimation(.spring(response: 0.35, dampingFraction: 0.9)) {
+                            dragOffset = -CGFloat(clamped) * itemStride
                         }
+                        
+                        lastOffset = dragOffset
+                        selectedValue = range[clamped]
+                        playTickSound()
                     }
             )
-            .mask(
-                LinearGradient(
-                    gradient: Gradient(stops: [
-                        .init(color: .clear, location: 0),
-                        .init(color: .black, location: 0.15),
-                        .init(color: .black, location: 0.85),
-                        .init(color: .clear, location: 1)
-                    ]),
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-            )
             .onAppear {
-                // Инициализируем позицию для выбранного значения
                 if let initialIndex = range.firstIndex(of: selectedValue) {
                     let itemHeight: CGFloat = 65
                     dragOffset = -CGFloat(initialIndex) * itemHeight
@@ -120,41 +129,6 @@ struct CustomPicker: View {
         .padding(.bottom, 80)
     }
     
-    private func startTimer() {
-        timer = Timer.publish(every: 0.05, on: .main, in: .common).autoconnect()
-    }
-    
-    private func stopTimer() {
-        timer?.upstream.connect().cancel()
-        timer = nil
-    }
-    
-    private func updateSelectedValue(geometry: GeometryProxy) {
-        guard !isDragging else { return }
-        
-        let itemHeight: CGFloat = 65
-        let currentIndex = -Int(round(dragOffset / itemHeight))
-        let clampedIndex = max(0, min(range.count - 1, currentIndex))
-        let newValue = range[clampedIndex]
-        
-        if newValue != selectedValue {
-            selectedValue = newValue
-        }
-    }
-    
-    private func snapToNearestValue() {
-        let itemHeight: CGFloat = 65
-        let targetIndex = -Int(round(dragOffset / itemHeight))
-        let clampedIndex = max(0, min(range.count - 1, targetIndex))
-        let targetValue = range[clampedIndex]
-        let targetOffset = -CGFloat(clampedIndex) * itemHeight
-        
-        selectedValue = targetValue
-        
-        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-            dragOffset = targetOffset
-        }
-    }
     
     func playTickSound() {
         AudioServicesPlaySystemSound(1104)
