@@ -13,6 +13,6 @@ struct UserProfile: Codable {
     var email: String
     var age: Int
     var weight: Double
-    var height: Double
+    var height: Int
     var gender: String
 }

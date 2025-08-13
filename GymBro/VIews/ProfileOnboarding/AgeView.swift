@@ -21,8 +21,10 @@ struct AgeView: View {
     
     private var customPicker: some View{
         GeometryReader{ geo in
-            CustomPicker(selectedValue: $viewModel.userProfile.age, range: Array(16...70))
+            CustomPicker(selectedValue: $viewModel.userProfile.age,
+                         range: Array(16...70), selectedFontSize: 30, secondaryFontSize: 26)
                 .frameRelative(to: geo, widthPercent: 0.6, heightPercent: 0.75)
+                .clipped()
                 .position(x: geo.size.width / 2, y: geo.size.height / 2)
             
         }
@@ -55,7 +57,7 @@ struct AgeView: View {
                     .position(x: geo.size.width / 2, y: geo.size.height / 2)
                 HorizontalDottedLine(dotSize: 3, spacing: 3)
                     .position(x: geo.size.width / 2, y: geo.size.height / 2)
-                    .padding(.top, -70)
+                    .padding(.top, -75)
             }
         }
     }
@@ -65,13 +67,17 @@ struct AgeView: View {
     AgeView(viewModel: OnboardingViewModel(repository: MockUserProfileRepository()))
 }
 
-struct CustomPicker: View {
-    @Binding var selectedValue: Int
+struct CustomPicker<T: Hashable & Comparable & Strideable & LosslessStringConvertible>: View {
     
-    let range: [Int]
+    @Binding var selectedValue: T
+    
+    let range: [T]
+    let selectedFontSize: CGFloat
+    let secondaryFontSize: CGFloat
     
     @State private var dragOffset: CGFloat = 0
     @State private var lastOffset: CGFloat = 0
+    @State private var lastSoundValue: T?
     
     private let cellHeight: CGFloat = 45
     private let spacing: CGFloat = 20
@@ -89,22 +95,35 @@ struct CustomPicker: View {
                         let isClosest = distance < 30
                         
                         Text("\(value)")
-                            .font(.system(size: isClosest ? 30 : 26))
+                            .font(.system(size: isClosest ? selectedFontSize : secondaryFontSize))
                             .fontWeight(isClosest ? .bold : .regular)
                             .foregroundColor(isClosest ? .white : .gray.opacity(0.5))
                             .scaleEffect(scaleEffect(for: distance))
                             .opacity(opacity(for: distance))
                             .frame(width: geo.size.width, height: 50)
+
                     }
                     .frame(height: 45)
                 }
+
             }
-            .padding(.vertical, geo.size.height / 2 - 20)
+            .padding(.vertical, geo.size.height / 2 - cellHeight / 2)
             .offset(y: dragOffset)
             .gesture(
                 DragGesture()
                     .onChanged { gesture in
                         dragOffset = lastOffset + gesture.translation.height
+                        
+                        let rawIndex = -dragOffset / itemStride
+                        let clamped = min(max(Int(round(rawIndex)), 0), range.count - 1)
+                        let newValue = range[clamped]
+                        
+                        if newValue != lastSoundValue {
+                            playTickSound()
+                            lastSoundValue = newValue
+                        }
+                        
+                        selectedValue = newValue
                     }
                     .onEnded { _ in
                         let rawIndex = -dragOffset / itemStride
@@ -116,13 +135,13 @@ struct CustomPicker: View {
                         
                         lastOffset = dragOffset
                         selectedValue = range[clamped]
-                        playTickSound()
                     }
             )
             .onAppear {
                 if let initialIndex = range.firstIndex(of: selectedValue) {
-                    let itemHeight: CGFloat = 65
-                    dragOffset = -CGFloat(initialIndex) * itemHeight
+                    let itemStride = cellHeight + spacing
+                    dragOffset = -CGFloat(initialIndex) * itemStride
+                    lastOffset = dragOffset
                 }
             }
         }

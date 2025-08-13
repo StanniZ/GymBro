@@ -29,7 +29,7 @@ extension UserProfile {
         entity.email = email
         entity.age = Int16(age)
         entity.weight = Double(weight)
-        entity.height = Double(height)
+        entity.height = Int(height)
         entity.gender = gender
         return entity
     }

@@ -21,7 +21,7 @@ extension UserEntity {
     @NSManaged public var email: String?
     @NSManaged public var age: Int16
     @NSManaged public var weight: Double
-    @NSManaged public var height: Double
+    @NSManaged public var height: Int
     @NSManaged public var gender: String?
 
 }

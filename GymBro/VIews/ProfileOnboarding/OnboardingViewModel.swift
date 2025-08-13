@@ -18,8 +18,8 @@ final class OnboardingViewModel: ObservableObject {
             name: "",
             email: "",
             age: 25,
-            weight: 0.0,
-            height: 0.0,
+            weight: 60.5,
+            height: 160,
             gender: ""
         )
     }
