@@ -7,6 +7,8 @@ import SwiftUI
 
 struct PersonalInfoView: View {
     @StateObject var viewModel: OnboardingViewModel
+    @Binding var selection: Int
+    
     var body: some View {
         ZStack{
             VStack(spacing: 16){
@@ -15,15 +17,15 @@ struct PersonalInfoView: View {
                 name
                 secondTitle
                 email
-                nextButton
-                Spacer()
                 quote
+                Spacer()
             }
+            nextButton
             .padding(.top, 70)
             .padding(.bottom, 70)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .padding(55)
+        .padding(16)
         .background(Color.backmain)
     }
     
@@ -88,19 +90,13 @@ struct PersonalInfoView: View {
         Button(action: {
             Task{
                 await viewModel.saveProfile()
+                print(viewModel.userProfile.email)
+                selection += 1
             }
         }) {
-            HStack(spacing: 4){
-                Spacer()
-                Text("Next")
-                    .font(.system(size: 18, weight: .thin))
-                    .foregroundColor(.currentday)
-                Image(systemName: "chevron.right")
-                    .font(.system(size: 18, weight: .thin))
-                    .foregroundColor(.currentday)
-            }
+            CustomNextButton()
         }
-        .padding()
+        .offset(x: 130, y: 250)
     }
     
     private var quote: some View {
@@ -119,16 +115,7 @@ struct PersonalInfoView: View {
     }
 }
 
-#Preview {
-    PersonalInfoView(viewModel: OnboardingViewModel(repository: MockUserProfileRepository()))
-}
+//#Preview {
+//    PersonalInfoView(viewModel: OnboardingViewModel(repository: MockUserProfileRepository()), sele)
+//}
 
-extension View {
-    func frameRelative(to geometry: GeometryProxy, widthPercent: CGFloat, heightPercent: CGFloat) -> some View {
-        self.frame(
-                    width: geometry.size.width * widthPercent,
-                    height: geometry.size.height * heightPercent,
-                    alignment: .center
-                )
-    }
-}
