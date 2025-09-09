@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-class SettingsViewModel: ObservableObject {
+final class SettingsViewModel: ObservableObject {
     
     @AppStorage(SettingsKeys.darkMode)
     var isDarkModeEnabled: Bool = true

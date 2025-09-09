@@ -17,7 +17,7 @@ struct TodaysWorkoutView: View {
     var body: some View {
         header
         NavigationLink(
-            destination: TodaysTrainingPlan(viewModel: viewModel)
+            destination: TrackWorkoutView(viewModel: viewModel)
         ){
             ZStack{
                 Group{
@@ -152,4 +152,5 @@ struct ExerciseRow: View {
         }
     }
 }
+
 

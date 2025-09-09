@@ -59,7 +59,7 @@ struct CustomPicker<T: Hashable & Comparable & Strideable & LosslessStringConver
                         let newValue = range[clamped]
                         
                         if newValue != lastSoundValue {
-                            playTickSound()
+                            PlaySound.playTickSound()
                             lastSoundValue = newValue
                         }
                         

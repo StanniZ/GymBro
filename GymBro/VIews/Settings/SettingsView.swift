@@ -7,7 +7,9 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @EnvironmentObject var settings: SettingsViewModel
+    @ObservedObject var settings: SettingsViewModel
+//    @ObservedObject var profile: OnboardingViewModel
+//    @ObservedObject var photo: ProfilePhotoViewModel
     
     var settingsItem: [SettingsItemModel]{
         [
@@ -32,14 +34,14 @@ struct SettingsView: View {
                 VStack(spacing: 20){
                     MainHeader()
                     
-                    ForEach(settingsItem){ item in
-                        SettingsRow(
-                            title: item.title,
-                            systemImage: item.systemImage,
-                            isShowsToggle: item.isShowsToggle,
-                            toggleValue: item.toggleValue ?? .constant(false)
-                        )
-                        HorizontalDottedLineSettings(width: geometry.size.width - 32)
+//                    ForEach(settingsItem){ item in
+//                        SettingsRow(
+//                            title: item.title,
+//                            systemImage: item.systemImage,
+//                            isShowsToggle: item.isShowsToggle,
+//                            toggleValue: item.toggleValue ?? .constant(false)
+//                        )
+//                        HorizontalDottedLineFull(width: geometry.size.width - 32)
                     }
                 }
                 .padding(16)
@@ -71,11 +73,11 @@ struct SettingsView: View {
                         .scaleEffect(0.75)
                 }
             }
-        }
+//        }
     }
 }
 
-#Preview {
-    SettingsView()
-        .environmentObject(SettingsViewModel())
-}
+//#Preview {
+//    SettingsView()
+//        .environmentObject(SettingsViewModel())
+//}

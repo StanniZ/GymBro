@@ -24,15 +24,14 @@ struct PhysicalParametersView: View {
     private var customPicker: some View{
         GeometryReader{ geo in
             HStack {
-                CustomPicker(selectedValue: $viewModel.userProfile.weight,
-                             range: stride(from: 40.0, through: 200, by: 0.5).map { $0 },
-                             selectedFontSize: 22, secondaryFontSize: 16)
-                CustomPicker(selectedValue: $viewModel.userProfile.height,
-                             range: Array(130...240),
-                             selectedFontSize: 22, secondaryFontSize: 16)
+//                CustomPicker(selectedValue: $viewModel.userProfile.weight,
+//                             range: stride(from: 40.0, through: 200, by: 0.5).map { $0 },
+//                             selectedFontSize: 22, secondaryFontSize: 16)
+//                CustomPicker(selectedValue: $viewModel.userProfile.height,
+//                             range: Array(130...240),
+//                             selectedFontSize: 22, secondaryFontSize: 16)
                 
             }
-            .frameRelative(to: geo, widthPercent: 1.0, heightPercent: 0.75)
             .clipped()
             .position(x: geo.size.width / 2, y: geo.size.height / 2)
         }
@@ -49,6 +48,6 @@ struct PhysicalParametersView: View {
     }
 }
 
-#Preview {
-    PhysicalParametersView(viewModel: OnboardingViewModel(repository: MockUserProfileRepository()))
-}
+//#Preview {
+//    PhysicalParametersView(viewModel: OnboardingViewModel(repository: MockUserProfileRepository()))
+//}

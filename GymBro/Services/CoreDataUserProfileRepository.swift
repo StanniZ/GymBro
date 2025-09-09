@@ -8,7 +8,6 @@ import Foundation
 import CoreData
 
 final class CoreDataUserProfileRepository: UserProfileRepository {
-    //Контекст Core Data через который выполняются операции
     private let context: NSManagedObjectContext
     
     init(context: NSManagedObjectContext = PersistenceController.shared.context) {
@@ -44,9 +43,9 @@ final class CoreDataUserProfileRepository: UserProfileRepository {
         entity.name = userProfile.name
         entity.email = userProfile.email
         entity.age = Int16(userProfile.age)
-        entity.weight = userProfile.weight
-        entity.height = userProfile.height
-        entity.gender = userProfile.gender
+        entity.weight = Double(userProfile.weight)
+        entity.height = Int16(userProfile.height)
+        entity.gender = userProfile.gender.displayName
         
         try context.save()
     }

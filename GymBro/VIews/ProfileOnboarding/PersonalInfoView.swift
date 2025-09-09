@@ -89,12 +89,12 @@ struct PersonalInfoView: View {
     private var nextButton: some View {
         Button(action: {
             Task{
-                await viewModel.saveProfile()
+//                await viewModel.saveProfile()
                 print(viewModel.userProfile.email)
                 selection += 1
             }
         }) {
-            CustomNextButton()
+//            CustomNextButton()
         }
         .offset(x: 130, y: 250)
     }

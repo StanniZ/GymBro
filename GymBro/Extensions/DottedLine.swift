@@ -62,28 +62,30 @@ struct HorizontalDottedLine: View {
     }
 }
 
-struct HorizontalDottedLineSettings: View {
+struct HorizontalDottedLineFull: View {
     var dotSize: CGFloat = 1
-    var spacing: CGFloat = 1
-    var width: CGFloat = 1000
+    var spacing: CGFloat = 2
     var color: Color = .gray
 
     var body: some View {
-        HStack(spacing: spacing) {
-            let dotCount = max(0, Int(width / max(dotSize + spacing, 0.1)))
-        
-            ForEach(0..<dotCount, id: \.self) { index in
-                Circle()
-                    .frame(width: dotSize, height: dotSize)
-                    .foregroundColor(color)
-                    .opacity(opacityFor(index: index))
+        GeometryReader { geometry in
+            let width = geometry.size.width
+            let dotCount = max(0, Int(width / (dotSize + spacing)))
+
+            HStack(spacing: spacing) {
+                ForEach(0..<dotCount, id: \.self) { index in
+                    Circle()
+                        .frame(width: dotSize, height: dotSize)
+                        .foregroundColor(color)
+                        .opacity(opacityFor(index: index, totalDots: dotCount))
+                }
             }
+            .frame(width: width, height: dotSize, alignment: .center)
         }
         .frame(height: dotSize)
     }
 
-    private func opacityFor(index: Int) -> Double {
-        let totalDots = Int(width / (dotSize + spacing))
+    private func opacityFor(index: Int, totalDots: Int) -> Double {
         let middle = Double(totalDots) / 2
         let distance = abs(Double(index) - middle)
         let maxFade = middle

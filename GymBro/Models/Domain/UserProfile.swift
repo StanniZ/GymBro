@@ -5,7 +5,6 @@
 //  Created by macbook on 29/07/2025.
 //
 import Foundation
-import CoreData
 
 struct UserProfile: Codable {
     let id: UUID
@@ -14,5 +13,5 @@ struct UserProfile: Codable {
     var age: Int
     var weight: Double
     var height: Int
-    var gender: String
+    var gender: Gender
 }

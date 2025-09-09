@@ -6,7 +6,7 @@
 //
 import SwiftUI
 
-struct Statistics: View {
+struct HistorySession: View {
     var body: some View {
         Text("Statistics")
     }

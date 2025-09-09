@@ -7,6 +7,7 @@
 import Foundation
 
 protocol UserProfileRepository {
+    
     func fetchUserProfile() async throws -> UserProfile
     
     func saveUserProfile(_ userProfile: UserProfile) async throws

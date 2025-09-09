@@ -13,7 +13,7 @@ struct CustomNextButton: View {
     var body: some View {
         Button(action: {
             Task{
-                await viewModel.saveProfile()
+//                await viewModel.saveProfile()
             }
         }) {
             HStack(spacing: 4){

@@ -6,7 +6,8 @@
 //
 import Foundation
 
-class MockUserProfileRepository: UserProfileRepository {
+final class MockUserProfileRepository: UserProfileRepository {
+    
     
     func fetchUserProfile() async throws -> UserProfile{
         return UserProfile(
@@ -21,6 +22,5 @@ class MockUserProfileRepository: UserProfileRepository {
     }
     
     func saveUserProfile(_ userProfile: UserProfile) async throws{
-        
     }
 }

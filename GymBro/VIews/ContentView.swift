@@ -14,10 +14,8 @@ struct ContentView: View {
     var body: some View {
         GeometryReader { _ in
             currentScreen
-                .transition(.asymmetric(
-                    insertion: .move(edge: .trailing),
-                    removal: .move(edge: .leading)
-                ))
+                .transition(
+                    .asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
                 .animation(.easeInOut(duration: 0.35), value: appState.currentScreen)
         }
 //        .onAppear {

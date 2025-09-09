@@ -77,7 +77,7 @@ struct TodaysTrainingPlan: View {
                 .foregroundStyle(iconColor)
             Text("\(value)")
                 .foregroundStyle(valueColor)
-            Text("\(label)")
+            Text(label)
                 .foregroundStyle(labelColor)
         }
         .padding(8)
@@ -136,7 +136,9 @@ struct TodaysTrainingPlan: View {
                         Text("Saving...")
                     }
                 case .saved:
-                    Label("Saved", systemImage: "checkmark.circle,fill")
+                    withAnimation(.easeInOut(duration: 1)){
+                        Label("Saved", systemImage: "checkmark.circle,fill")
+                    }
                 case .failed:
                     Text("Retry please...")
                 }
@@ -164,3 +166,4 @@ struct TodaysTrainingPlan: View {
         }
     }
 }
+

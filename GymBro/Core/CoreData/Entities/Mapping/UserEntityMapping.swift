@@ -15,8 +15,8 @@ extension UserEntity : Identifiable {
             email: self.email ?? "",
             age: Int(self.age),
             weight: self.weight,
-            height: self.height,
-            gender: self.gender ?? ""
+            height: Int(self.height),
+            gender: Gender(databaseString: gender)
         )
     }
 }
@@ -29,8 +29,8 @@ extension UserProfile {
         entity.email = email
         entity.age = Int16(age)
         entity.weight = Double(weight)
-        entity.height = Int(height)
-        entity.gender = gender
+        entity.height = Int16(height)
+        entity.gender = gender.rawValue
         return entity
     }
 }
