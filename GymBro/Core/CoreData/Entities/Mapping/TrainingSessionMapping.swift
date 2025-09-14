@@ -24,6 +24,7 @@ extension TrainingSessionEntity : Identifiable {
             foto: self.foto ?? "",
             muscleName: self.muscleName ?? "",
             isFinished: self.isFinished,
+            timestamp: self.timestamp ?? Date(),
             exercises: exercisesArray.map { $0.toModel() }
         )
     }
@@ -36,6 +37,7 @@ extension TrainingSessionEntity : Identifiable {
         self.foto = model.foto
         self.muscleName = model.muscleName
         self.isFinished = model.isFinished
+        self.timestamp = model.timestamp
 
         let exerciseEntities = model.exercises.map { model in
             let entity = ExerciseEntity(context: context)
@@ -63,6 +65,7 @@ extension TrainingSessionModel {
             foto: "",
             muscleName: "",
             isFinished: false,
+            timestamp: Date(),
             exercises: []
         )
     }
@@ -76,6 +79,7 @@ extension TrainingSessionModel {
         entity.dayOfWeek = dayOfWeek
         entity.calories = Int16(calories)
         entity.isFinished = isFinished
+        entity.timestamp = timestamp
         
         let exerciseEntities = exercises.map { ex in
             let exercise = ExerciseEntity(context: context)

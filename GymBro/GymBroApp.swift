@@ -13,6 +13,7 @@ struct GymBroApp: App {
     @StateObject private var currentSessionProvider = CurrentSessionProvider()
     @StateObject private var appState = AppState()
     @StateObject private var settings = SettingsViewModel()
+    @StateObject private var statistics = StatisticsViewModel()
     
     init(){
         CoreDataSeeder.shared.seedInitialSessionIfNeeded()

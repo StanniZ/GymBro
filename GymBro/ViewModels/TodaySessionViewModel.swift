@@ -9,7 +9,7 @@ import Combine
 
 // ViewModel для работы с тренировкой на сегодня
 @MainActor
-class TodaySessionViewModel: ObservableObject {
+final class TodaySessionViewModel: ObservableObject {
     
     enum SaveState: Equatable{ case ready, saving, saved, failed(String)}
     

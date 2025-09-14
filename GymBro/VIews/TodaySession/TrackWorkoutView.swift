@@ -42,7 +42,7 @@ struct TrackWorkoutView: View {
                 finishSessionButton
             }
         }
-        .toolbar(.hidden, for: .tabBar)
+
     }
     
     private var title: some View {
@@ -112,6 +112,7 @@ struct TrackWorkoutView: View {
         VStack {
             Button {
                 withAnimation(.easeInOut(duration: 1)){
+                    viewModel.draftSession.timestamp = Date()
                     viewModel.finishSession()
                 }
             } label: {

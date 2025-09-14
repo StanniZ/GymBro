@@ -54,35 +54,39 @@ struct ExerciseList: View {
                 Text("Weight")
                 Text("Reps")
             }
-            .font(.system(size: 16, weight: .medium))
+            .font(.system(size: 14, weight: .bold))
             .foregroundStyle(.white.opacity(0.5))
             .gridColumnAlignment(.leading)
 
             ForEach(Array($exercise.sets.enumerated()), id: \.1.id) { index, $set in
                 GridRow {
                     Text("\(index + 1)")
+                        .foregroundStyle(.white.opacity(0.7))
                         .frame(height: 40)
                         .frame(minWidth: 40)
                         .background(RoundedRectangle(cornerRadius: 6).fill(Color.backbutton))
 
                     Text("22kg × 12")
+                        .foregroundStyle(.white.opacity(0.7))
                         .padding(.horizontal, 16)
                         .frame(minHeight: 40)
                         .background(RoundedRectangle(cornerRadius: 6).fill(Color.currentday).opacity(0.05))
 
                     TextField("Weight", value: $set.weightKg, format: .number)
+                        .foregroundStyle(.white)
                         .textFieldStyle(.plain)
                         .padding(.horizontal, 16)
                         .keyboardType(.numberPad)
-                        .multilineTextAlignment(.center)
+                        .multilineTextAlignment(.leading)
                         .frame(minHeight: 40)
                         .frame(maxWidth: 80)
                         .background(RoundedRectangle(cornerRadius: 6).stroke(Color.white.opacity(0.5), lineWidth: 0.5))
                     
                     TextField("Reps", value: $set.reps, format: .number)
+                        .foregroundStyle(.white)
                         .textFieldStyle(.plain)
                         .padding(.horizontal, 16)
-                        .multilineTextAlignment(.center)
+                        .multilineTextAlignment(.leading)
                         .frame(minHeight: 40)
                         .frame(maxWidth: 70)
                         .background(RoundedRectangle(cornerRadius: 6).stroke(Color.white.opacity(0.5), lineWidth: 0.5))
@@ -91,7 +95,7 @@ struct ExerciseList: View {
                         .frame(minHeight: 40)
                     
                 }
-                .foregroundStyle(.white)
+                .font(.system(size: 14, weight: .medium))
             }
         }
         .gridColumnAlignment(.leading)

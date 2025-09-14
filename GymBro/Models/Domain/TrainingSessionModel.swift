@@ -17,6 +17,7 @@ struct TrainingSessionModel: Identifiable {
     var foto: String
     var muscleName: String
     var isFinished: Bool = false
+    var timestamp: Date?
     var exercises: [ExerciseModel]
     
     init(
@@ -28,6 +29,7 @@ struct TrainingSessionModel: Identifiable {
         foto: String,
         muscleName: String,
         isFinished: Bool,
+        timestamp: Date? = nil,
         exercises: [ExerciseModel] = []
     ) {
         self.id = id
@@ -38,6 +40,7 @@ struct TrainingSessionModel: Identifiable {
         self.foto = foto
         self.muscleName = muscleName
         self.isFinished = isFinished
+        self.timestamp = timestamp
         self.exercises = exercises
     }
 }

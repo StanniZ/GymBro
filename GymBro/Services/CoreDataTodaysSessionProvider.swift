@@ -7,7 +7,7 @@
 import CoreData
 import Foundation
 
-final class CoreDataTodaysSessionProvider: TodaysSessionProviderProtocol {
+final class CoreDataTodaysSessionProvider: TodaysSessionProviderProtocol, StatisticsProtocol {
     
     private let context: NSManagedObjectContext
     private let container: NSPersistentContainer
@@ -48,43 +48,19 @@ final class CoreDataTodaysSessionProvider: TodaysSessionProviderProtocol {
             entity.isFinished = true
             if bgContext.hasChanges {
                 try bgContext.save()
-                print("session saved")
-                self.fetchFinishedSessions()
             }
         }
     }
     
-    func fetchFinishedSessions() {
-        let request: NSFetchRequest<TrainingSessionEntity> = TrainingSessionEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "isFinished == YES")
-        do{
-            let results = try context.fetch(request)
-            print("Finished sessions:", results.count)
-            for session in results {
-                print("\(session.muscleName ?? "No muscle name"), \(session.calories)")
-                
-                if let exercises = session.exercises as? Set<ExerciseEntity>{
-                    for exercise in exercises {
-                        print("\(exercise.name ?? "No exercise name")")
-                        
-                        if let sets = exercise.sets as? Set<ExerciseSetEntity>{
-                            let sortedSets = sets.sorted {
-                                ($0.timestamp ?? Date.distantPast) > ($1.timestamp ?? Date.distantPast)
-                            }
-                            for (index, exerciseSet) in sortedSets.enumerated() {
-                                print("Set \(index+1). \(exerciseSet.reps) reps, \(exerciseSet.weightKg) kg")
-                            }
-                        } else {
-                            print( "No sets found")
-                        }
-                    }
-                } else {
-                    print( "No exercises found")
-                }
-            }
-        } catch {
-            print("error fetching finished sessions: \(error)")
+    
+    func getAllFinishedSessions() async throws -> [TrainingSessionModel] {
+        try await context.perform {
+            let req: NSFetchRequest<TrainingSessionEntity> = TrainingSessionEntity.fetchRequest()
+            req.predicate = NSPredicate(format: "isFinished == YES")
+            req.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+            let entities = try self.context.fetch(req)
+            return entities.map { $0.toModel() }
         }
-        
     }
 }
+

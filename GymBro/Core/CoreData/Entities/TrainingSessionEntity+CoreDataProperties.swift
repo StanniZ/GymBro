@@ -23,6 +23,7 @@ extension TrainingSessionEntity {
     @NSManaged public var foto: String?
     @NSManaged public var id: UUID?
     @NSManaged public var muscleName: String?
+    @NSManaged public var timestamp: Date?
     @NSManaged public var exercises: NSSet?
     @NSManaged public var isFinished: Bool
 

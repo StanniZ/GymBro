@@ -7,11 +7,11 @@ import SwiftUI
 
 struct MainTabView: View {
     
-   @EnvironmentObject var currentSessionProvider: CurrentSessionProvider
-   @EnvironmentObject var profileVM: OnboardingViewModel
-   @EnvironmentObject var photoVM: ProfilePhotoViewModel
-   @EnvironmentObject var settingsVM: SettingsViewModel
-   @State private var selection = 0
+    @EnvironmentObject var currentSessionProvider: CurrentSessionProvider
+    @EnvironmentObject var profileVM: OnboardingViewModel
+    @EnvironmentObject var photoVM: ProfilePhotoViewModel
+    @EnvironmentObject var settingsVM: SettingsViewModel
+    @State private var selection = 0
    
    var body: some View {
        ZStack(alignment: .bottom) {
@@ -30,7 +30,7 @@ struct MainTabView: View {
        case 1:
            Recommendation()
        case 2:
-           Statistics()
+           HistorySession()
        case 3:
            SettingsView(settings: settingsVM)
        default:
