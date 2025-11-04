@@ -72,7 +72,7 @@ extension TrainingSessionModel {
     
     func toEntity(context: NSManagedObjectContext) -> TrainingSessionEntity {
         let entity = TrainingSessionEntity(context: context)
-        entity.id = self.id
+        entity.id = id
         entity.muscleName = muscleName
         entity.foto = foto
         entity.durationMinutes = Int16(durationMinutes)
@@ -89,7 +89,7 @@ extension TrainingSessionModel {
             
             let setEntities = ex.sets.map { setModel -> ExerciseSetEntity in
                 let setEntity = ExerciseSetEntity(context: context)
-                setEntity.id = ex.id
+                setEntity.id = setModel.id
                 setEntity.reps = Int16(setModel.reps)
                 setEntity.timestamp = setModel.timestamp
                 setEntity.weightKg = setModel.weightKg

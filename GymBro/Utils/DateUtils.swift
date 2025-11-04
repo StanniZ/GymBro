@@ -6,29 +6,18 @@
 //
 import Foundation
 
-struct DateUtils {
+extension Date {
     
-    static let calendar = Calendar.current
-    
-    static var currentWeekday: String {
-        let formater = DateFormatter()
-        formater.dateFormat = "EEEE"
-        return formater.string(from: Date())
-    }
-    
-    static func generatedDateOfMonth(from date: Date = Date()) -> [Date] {
-        guard let firstDayOfMounth = calendar.date(from: calendar.dateComponents([.year, .month], from: date)),
-              let range = calendar.range(of: .day, in: .month, for: date) else {
+    static func generateTwoWeeks(from date: Date = Date()) -> [Date] {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: date)
+        
+        guard let startDate = calendar.date(byAdding: .day, value: -7, to: today) else {
             return []
         }
         
-        return range.compactMap{ day -> Date? in
-            calendar.date(byAdding: .day, value: day - 1, to: firstDayOfMounth)
+        return (0..<16).compactMap { offset in
+            calendar.date(byAdding: .day, value: offset, to: startDate)
         }
-    }
-    
-    static func generateFromCurrentDateToEndOfMonth(from date: Date = Date()) -> [Date] {
-        let allDates = generatedDateOfMonth(from: date)
-        return allDates.filter { date < $0}
     }
 }

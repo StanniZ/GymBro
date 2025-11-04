@@ -8,4 +8,5 @@ import Foundation
 
 protocol StatisticsProtocol {
     func getAllFinishedSessions() async throws -> [TrainingSessionModel]
+    func deleteSession(with id: UUID) async throws
 }

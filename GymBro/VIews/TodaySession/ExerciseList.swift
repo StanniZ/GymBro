@@ -72,11 +72,11 @@ struct ExerciseList: View {
                         .frame(minHeight: 40)
                         .background(RoundedRectangle(cornerRadius: 6).fill(Color.currentday).opacity(0.05))
 
-                    TextField("Weight", value: $set.weightKg, format: .number)
+                    TextField("Weight", value: $set.weightKg, format: .number.precision(.fractionLength(0...1)).locale(Locale(identifier: "en_US")))
                         .foregroundStyle(.white)
                         .textFieldStyle(.plain)
                         .padding(.horizontal, 16)
-                        .keyboardType(.numberPad)
+                        .keyboardType(.decimalPad)
                         .multilineTextAlignment(.leading)
                         .frame(minHeight: 40)
                         .frame(maxWidth: 80)

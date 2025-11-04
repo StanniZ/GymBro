@@ -41,7 +41,7 @@ struct SettingsView: View {
 //                            isShowsToggle: item.isShowsToggle,
 //                            toggleValue: item.toggleValue ?? .constant(false)
 //                        )
-//                        HorizontalDottedLineFull(width: geometry.size.width - 32)
+//                        HorizontalDottedLineFull()
                     }
                 }
                 .padding(16)
@@ -73,8 +73,8 @@ struct SettingsView: View {
                         .scaleEffect(0.75)
                 }
             }
-//        }
-    }
+        }
+//    }
 }
 
 //#Preview {

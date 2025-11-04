@@ -9,7 +9,7 @@ import CoreData
 
 struct TrainingSessionModel: Identifiable {
     
-    let id: UUID
+    var id: UUID
     var calories: Int
     var countExercise: Int
     var dayOfWeek: String

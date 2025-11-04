@@ -44,11 +44,13 @@ final class CoreDataTodaysSessionProvider: TodaysSessionProviderProtocol, Statis
     func finishTodaysSession(_ session: TrainingSessionModel) async throws {
         let bgContext = container.newBackgroundContext()
         try await bgContext.perform{
-            let entity = session.toEntity(context: bgContext)
-            entity.isFinished = true
-            if bgContext.hasChanges {
-                try bgContext.save()
-            }
+            var finished = session
+            finished.id = UUID()
+            finished.isFinished = true
+            finished.timestamp = Date()
+            _ = finished.toEntity(context: bgContext)
+            
+            try bgContext.save()
         }
     }
     
@@ -57,9 +59,25 @@ final class CoreDataTodaysSessionProvider: TodaysSessionProviderProtocol, Statis
         try await context.perform {
             let req: NSFetchRequest<TrainingSessionEntity> = TrainingSessionEntity.fetchRequest()
             req.predicate = NSPredicate(format: "isFinished == YES")
-            req.sortDescriptors = [NSSortDescriptor(key: "date", ascending: false)]
+            req.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
             let entities = try self.context.fetch(req)
             return entities.map { $0.toModel() }
+        }
+    }
+    
+    func deleteSession(with id: UUID) async throws {
+        let bg = container.newBackgroundContext()
+        try await bg.perform {
+            let req: NSFetchRequest<TrainingSessionEntity> = TrainingSessionEntity.fetchRequest()
+            req.fetchLimit = 1
+            req.predicate = NSPredicate(format: "id == %@", id as CVarArg)
+            
+            guard let entity = try bg.fetch(req).first else {
+                throw NSError(domain: "Delete", code: 404, userInfo: [NSLocalizedDescriptionKey: "Session not found"])
+            }
+            
+            bg.delete(entity)
+            try bg.save()
         }
     }
 }

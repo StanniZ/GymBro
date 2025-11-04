@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct BuildSessionScrollView: View {
-    @StateObject var viewModel: BuildSessionViewModel
+    @ObservedObject var viewModel: BuildSessionViewModel
     
     var body: some View {
         

@@ -69,8 +69,11 @@ struct TrackWorkoutView: View {
                 Image(systemName: "play.circle.fill")
                     .font(.system(size: 40))
                     .foregroundColor(.currentday)
-                    .padding()
+                    .padding(2)
                     .cornerRadius(8)
+                Text("Start")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.white)
             }
     }
     
@@ -126,7 +129,7 @@ struct TrackWorkoutView: View {
                     }
                 case .saved:
                     withAnimation(.easeInOut(duration: 1)){
-                        Label("Saved", systemImage: "checkmark.circle,fill")
+                        Label("Saved", systemImage: "checkmark.circle.fill")
                     }
                 case .failed:
                     Text("Retry please...")
@@ -150,6 +153,3 @@ struct TrackWorkoutView: View {
     }
 }
 
-//#Preview {
-//    TrackWorkoutView()
-//}

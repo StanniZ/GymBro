@@ -6,19 +6,15 @@
 //
 import SwiftUI
 
-struct HistorySession: View {
-    @StateObject var viewModel: StatisticsViewModel
-    
-    init(provider: StatisticsProtocol) {
-            _viewModel = StateObject(wrappedValue: StatisticsViewModel(provider: provider))
-        }
+struct HistorySessionView: View {
+    @EnvironmentObject var viewModel: StatisticsViewModel
     
     private var sessions: [TrainingSessionModel] {
         viewModel.sessions
     }
     
     var body: some View {
-        VStack(spacing: 16) {
+        VStack(alignment: .leading, spacing: 16) {
             header
             scrollHistory
             Spacer()
@@ -41,9 +37,17 @@ struct HistorySession: View {
     
     private var scrollHistory: some View {
         ScrollView(.vertical, showsIndicators: false) {
-            LazyVStack(spacing: 8) {
+            LazyVStack(spacing: 16) {
                 ForEach(sessions) { session in
-                    CellHistorySession(session: session)
+                    CellHistorySession(session: session, onDelete: { id in
+                        withAnimation {
+                            viewModel.deleteSession(id: id)
+                        }
+                    })
+                    .transition(.asymmetric(
+                        insertion: .opacity.combined(with: .scale(scale: 0.98)),
+                        removal:   .opacity
+                    ))
                 }
             }
         }
@@ -53,26 +57,44 @@ struct HistorySession: View {
 
 struct CellHistorySession: View {
     let session: TrainingSessionModel
+    let onDelete: (UUID) -> Void
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            nameSession
-            dateSession
-            HorizontalDottedLineFull()
-            infoSession
+        NavigationLink(destination: DetailsSessionView(session: session)) {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    nameSession
+                    Spacer()
+                    deleteSession
+                }
+                dateSession
+                HorizontalDottedLineFull()
+                infoSession
+            }
+            .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
+            .padding(16)
+            .overlay(
+                RoundedRectangle(cornerRadius: 8)
+                    .stroke(Color.white.opacity(0.3), lineWidth: 0.5)
+            )
         }
-        .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
-        .padding(16)
-        .overlay(
-            RoundedRectangle(cornerRadius: 8)
-                .stroke(Color.white.opacity(0.3), lineWidth: 0.5)
-        )
     }
     
     private var nameSession: some View {
         Text(session.muscleName)
             .font(.system(size: 18, weight: .medium))
             .foregroundStyle(.white)
+    }
+    
+    private var deleteSession: some View {
+        Button(action: { 
+            print(session.id)
+            onDelete(session.id)
+        }) {
+            Image(systemName: "xmark")
+                .font(.system(size: 16))
+                .foregroundColor(.white.opacity(0.5))
+        }
     }
     
     private var dateSession: some View {

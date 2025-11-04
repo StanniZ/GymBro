@@ -10,21 +10,41 @@ import SwiftUI
 @main
 struct GymBroApp: App {
     let persistenceController = PersistenceController.shared
-    @StateObject private var currentSessionProvider = CurrentSessionProvider()
+    @StateObject private var todaySessionVM: TodaySessionViewModel
+    @StateObject private var buildSessionVM: BuildSessionViewModel
+    @StateObject private var calendarVM: CalendarViewModel
+    @StateObject private var currentSessionProvider: CurrentSessionProvider
     @StateObject private var appState = AppState()
     @StateObject private var settings = SettingsViewModel()
-    @StateObject private var statistics = StatisticsViewModel()
+    @StateObject private var statistics: StatisticsViewModel
     
     init(){
+        let pc = PersistenceController.shared
+        let current = CurrentSessionProvider()
+        let context = PersistenceController.shared.container.viewContext
+        let providerToday = CoreDataTodaysSessionProvider(context: pc.context, container: pc.container)
+        let providerSession = CoreDataTrainingSessionProvider(context: context)
+        
         CoreDataSeeder.shared.seedInitialSessionIfNeeded()
+        
+        _statistics = StateObject(wrappedValue: StatisticsViewModel(provider: providerToday))
+        _currentSessionProvider = StateObject(wrappedValue: current)
+        _buildSessionVM = StateObject(wrappedValue: BuildSessionViewModel(provider: providerSession, currentSessionProvider: current))
+        _todaySessionVM = StateObject(wrappedValue: TodaySessionViewModel(provider: providerToday, currentSessionProvider: current))
+        _calendarVM = StateObject(wrappedValue: CalendarViewModel(provider: providerToday))
+        
     }
 
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(buildSessionVM)
+                .environmentObject(todaySessionVM)
                 .environmentObject(appState)
                 .environmentObject(currentSessionProvider)
                 .environmentObject(settings)
+                .environmentObject(statistics)
+                .environmentObject(calendarVM)
                 .environment(\.managedObjectContext, persistenceController.context)
         }
     }

@@ -7,7 +7,7 @@ import SwiftUI
 
 struct MainTabView: View {
     
-    @EnvironmentObject var currentSessionProvider: CurrentSessionProvider
+//    @EnvironmentObject var currentSessionProvider: CurrentSessionProvider
     @EnvironmentObject var profileVM: OnboardingViewModel
     @EnvironmentObject var photoVM: ProfilePhotoViewModel
     @EnvironmentObject var settingsVM: SettingsViewModel
@@ -21,20 +21,22 @@ struct MainTabView: View {
        }
        .ignoresSafeArea(edges: .bottom)
    }
-   
+    
    @ViewBuilder
    private var content: some View {
        switch selection {
        case 0:
-           MainView(currentSessionProvider: currentSessionProvider)
+           MainView()
        case 1:
            Recommendation()
        case 2:
-           HistorySession()
+           NavigationStack {
+               HistorySessionView()
+           }
        case 3:
            SettingsView(settings: settingsVM)
        default:
-           MainView(currentSessionProvider: currentSessionProvider)
+           MainView()
        }
    }
    

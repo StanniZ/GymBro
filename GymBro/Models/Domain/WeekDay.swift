@@ -7,9 +7,9 @@
 import SwiftUI
 
 struct WeekDay: Identifiable {
-    
     let id = UUID()
     let date: Date
+    
     var dayString: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "E"
