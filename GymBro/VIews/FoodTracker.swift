@@ -6,8 +6,8 @@
 //
 import SwiftUI
 
-struct Recommendation: View {
+struct FoodTracker: View {
     var body: some View {
-        Text("Recomendation")
+        Text("FoodTracker")
     }
 }

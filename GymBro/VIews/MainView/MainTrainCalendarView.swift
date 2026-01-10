@@ -31,7 +31,7 @@ struct MainTrainCelendarView: View {
                             Capsule()
                                 .stroke(calendar.isDateInToday(date) ? Color.currentday : Color.clear, lineWidth: 1)
                                 .fill(viewModel.isCompleted(date) ? Color.currentday.opacity(0.3) : Color.clear)
-                                .frame(width: 44, height: 44)
+                                .frame(width: 45, height: 45)
                             VStack(spacing: 2){
                                 Text(WeekDay(date: date).dayNumber)
                                     .fontWeight(.bold)

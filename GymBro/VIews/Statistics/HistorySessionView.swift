@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct HistorySessionView: View {
-    @EnvironmentObject var viewModel: StatisticsViewModel
+    @EnvironmentObject var viewModel: HistorySessionViewModel
     
     private var sessions: [TrainingSessionModel] {
         viewModel.sessions
@@ -18,12 +18,11 @@ struct HistorySessionView: View {
             header
             scrollHistory
             Spacer()
-        }
+        }   
         .task {
             await viewModel.load()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
-        .padding(16)
         .background(Color.backmain)
     }
     

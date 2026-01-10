@@ -7,8 +7,10 @@
 import SwiftUI
 
 struct TrackWorkoutView: View {
-    @ObservedObject var viewModel: TodaySessionViewModel
+    @ObservedObject var todaySession: TodaySessionViewModel
+    @EnvironmentObject var sessionTimer: SessionTimerViewModel
     @Environment(\.dismiss) private var dismiss
+    var startTimerButton: Bool = false
     
     var body: some View {
         VStack(spacing: 24) {
@@ -56,7 +58,7 @@ struct TrackWorkoutView: View {
             Text("Workout session")
                 .font(.system(size: 15, weight: .medium))
                 .foregroundStyle(.white.opacity(0.5))
-            Text(viewModel.draftSession.muscleName)
+            Text(todaySession.draftSession.muscleName)
                 .font(.system(size: 22, weight: .medium))
                 .foregroundStyle(.white)
         }
@@ -67,10 +69,9 @@ struct TrackWorkoutView: View {
                 
             }) {
                 Image(systemName: "play.circle.fill")
-                    .font(.system(size: 40))
+                    .font(.system(size: 30))
                     .foregroundColor(.currentday)
                     .padding(2)
-                    .cornerRadius(8)
                 Text("Start")
                     .font(.system(size: 16, weight: .medium))
                     .foregroundColor(.white)
@@ -79,11 +80,11 @@ struct TrackWorkoutView: View {
     
     private var parametersSession: some View {
         HStack {
-            parameterSession(value: "\(viewModel.draftSession.countExercise)", title: "Total Exercises")
+            parameterSession(value: "\(todaySession.draftSession.countExercise)", title: "Total Exercises")
             VerticalDottedLine(dotSize: 1, spacing: 2, height: 50)
-            parameterSession(value: "\(viewModel.draftSession.durationMinutes)", title: "Duration")
+            parameterSession(value: "\(todaySession.draftSession.durationMinutes)", title: "Duration")
             VerticalDottedLine(dotSize: 1, spacing: 2, height: 50)
-            parameterSession(value: "\(viewModel.draftSession.calories)", title: "Calories")
+            parameterSession(value: "\(todaySession.draftSession.calories)", title: "Calories")
         }
     }
     
@@ -101,9 +102,9 @@ struct TrackWorkoutView: View {
     
     private var exercisesSession: some View {
         VStack(spacing: 16){
-            ForEach(viewModel.draftSession.exercises.indices, id: \.self) { index in
-                ExerciseList(exercise: $viewModel.draftSession.exercises[index])
-                if index < viewModel.draftSession.exercises.count - 1 {
+            ForEach(todaySession.draftSession.exercises.indices, id: \.self) { index in
+                ExerciseList(exercise: $todaySession.draftSession.exercises[index])
+                if index < todaySession.draftSession.exercises.count - 1 {
                     HorizontalDottedLineFull()
                 }
             }
@@ -115,11 +116,11 @@ struct TrackWorkoutView: View {
         VStack {
             Button {
                 withAnimation(.easeInOut(duration: 1)){
-                    viewModel.draftSession.timestamp = Date()
-                    viewModel.finishSession()
+                    todaySession.draftSession.timestamp = Date()
+                    todaySession.finishSession()
                 }
             } label: {
-                switch viewModel.state {
+                switch todaySession.state {
                 case .ready:
                     Text("SAVE")
                 case .saving:
@@ -137,8 +138,8 @@ struct TrackWorkoutView: View {
             }
             .font(.system(size: 14, weight: .medium))
             .foregroundStyle(.logincolor)
-            .disabled(viewModel.state != .ready)
-            .opacity(viewModel.state != .ready ? 0.6 : 1)
+            .disabled(todaySession.state != .ready)
+            .opacity(todaySession.state != .ready ? 0.6 : 1)
         }
     }
     

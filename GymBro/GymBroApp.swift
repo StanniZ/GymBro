@@ -16,7 +16,8 @@ struct GymBroApp: App {
     @StateObject private var currentSessionProvider: CurrentSessionProvider
     @StateObject private var appState = AppState()
     @StateObject private var settings = SettingsViewModel()
-    @StateObject private var statistics: StatisticsViewModel
+    @StateObject private var history: HistorySessionViewModel
+    @StateObject private var timerSession = SessionTimerViewModel()
     
     init(){
         let pc = PersistenceController.shared
@@ -27,12 +28,11 @@ struct GymBroApp: App {
         
         CoreDataSeeder.shared.seedInitialSessionIfNeeded()
         
-        _statistics = StateObject(wrappedValue: StatisticsViewModel(provider: providerToday))
+        _history = StateObject(wrappedValue: HistorySessionViewModel(provider: providerToday))
         _currentSessionProvider = StateObject(wrappedValue: current)
         _buildSessionVM = StateObject(wrappedValue: BuildSessionViewModel(provider: providerSession, currentSessionProvider: current))
         _todaySessionVM = StateObject(wrappedValue: TodaySessionViewModel(provider: providerToday, currentSessionProvider: current))
         _calendarVM = StateObject(wrappedValue: CalendarViewModel(provider: providerToday))
-        
     }
 
     var body: some Scene {
@@ -43,8 +43,9 @@ struct GymBroApp: App {
                 .environmentObject(appState)
                 .environmentObject(currentSessionProvider)
                 .environmentObject(settings)
-                .environmentObject(statistics)
+                .environmentObject(history)
                 .environmentObject(calendarVM)
+                .environmentObject(timerSession)
                 .environment(\.managedObjectContext, persistenceController.context)
         }
     }

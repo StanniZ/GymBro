@@ -30,9 +30,7 @@ struct MainTabView: View {
        case 1:
            Recommendation()
        case 2:
-           NavigationStack {
-               HistorySessionView()
-           }
+           StatisticsView()
        case 3:
            SettingsView(settings: settingsVM)
        default:
