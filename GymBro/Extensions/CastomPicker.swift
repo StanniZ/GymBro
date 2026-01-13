@@ -34,7 +34,7 @@ struct CustomPicker<T: Hashable & Comparable & Strideable & LosslessStringConver
                         let distance = abs(centerY - midY)
                         let isClosest = distance < 30
                         
-                        Text("\(value)")
+                        Text(String(value))
                             .font(.system(size: isClosest ? selectedFontSize : secondaryFontSize))
                             .fontWeight(isClosest ? .bold : .regular)
                             .foregroundColor(isClosest ? .white : .gray.opacity(0.5))

@@ -28,7 +28,7 @@ struct MainTabView: View {
        case 0:
            MainView()
        case 1:
-           Recommendation()
+           FoodTracker()
        case 2:
            StatisticsView()
        case 3:

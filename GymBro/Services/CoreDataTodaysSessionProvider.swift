@@ -56,11 +56,12 @@ final class CoreDataTodaysSessionProvider: TodaysSessionProviderProtocol, Statis
     
     
     func getAllFinishedSessions() async throws -> [TrainingSessionModel] {
-        try await context.perform {
+        let ctx = context
+        return try await ctx.perform {
             let req: NSFetchRequest<TrainingSessionEntity> = TrainingSessionEntity.fetchRequest()
             req.predicate = NSPredicate(format: "isFinished == YES")
             req.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
-            let entities = try self.context.fetch(req)
+            let entities = try ctx.fetch(req)
             return entities.map { $0.toModel() }
         }
     }
