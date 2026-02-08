@@ -8,14 +8,24 @@ import SwiftUI
 
 final class SettingsViewModel: ObservableObject {
     
-    @AppStorage(SettingsKeys.darkMode)
+    @AppStorage("notifications_enabled")
+    var isNotificationsEnabled: Bool = false
+    
+    @AppStorage("dark_mode_enabled")
     var isDarkModeEnabled: Bool = true
     
-    @AppStorage(SettingsKeys.notificationEnabled)
-    var isNotificationEnabled: Bool = false
+    @AppStorage("weightUnit")
+    private var WeightUnitRaw: String = WeightUnit.kg.rawValue
+
+    var weightUnit: WeightUnit {
+        get { WeightUnit(rawValue: WeightUnitRaw) ?? .kg }
+        set { WeightUnitRaw = newValue.rawValue }
+    }
     
-    @AppStorage(SettingsKeys.weightUnit)
-    var weightUnit: WeightUnit = .kg
     
+    func logout() {
+        
+        print("Logout")
+    }
     
 }

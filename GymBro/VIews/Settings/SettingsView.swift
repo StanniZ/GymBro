@@ -7,77 +7,60 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @ObservedObject var settings: SettingsViewModel
-//    @ObservedObject var profile: OnboardingViewModel
-//    @ObservedObject var photo: ProfilePhotoViewModel
-    
-    var settingsItem: [SettingsItemModel]{
-        [
-            SettingsItemModel(title: "My account", systemImage: "person", isShowsToggle: false),
-            SettingsItemModel(title: "My goals", systemImage: "line.3.crossed.swirl.circle", isShowsToggle: false),
-            SettingsItemModel(
-                title: "Notification",
-                systemImage: "bell.badge",
-                isShowsToggle: true,
-                toggleValue: $settings.isNotificationEnabled),
-            SettingsItemModel(title: "Dark theme", systemImage: "moon", isShowsToggle: true, toggleValue: $settings.isDarkModeEnabled),
-            SettingsItemModel(title: "Workout History", systemImage: "magazine", isShowsToggle: false),
-            SettingsItemModel(title: "Weight Unit", systemImage: "scalemass", isShowsToggle: false),
-            SettingsItemModel(title: "Help & Support", systemImage: "point.3.connected.trianglepath.dotted", isShowsToggle: false),
-            SettingsItemModel(title: "Log Out", systemImage: "rectangle.portrait.and.arrow.right", isShowsToggle: false)
-        ]
-    }
+    @StateObject private var viewModel = SettingsViewModel()
+    private let configuration = SettingsConfigurationBuilder.build()
     
     var body: some View {
-        NavigationView {
-            GeometryReader { geometry in
-                VStack(spacing: 20){
-                    MainHeader()
-                    
-//                    ForEach(settingsItem){ item in
-//                        SettingsRow(
-//                            title: item.title,
-//                            systemImage: item.systemImage,
-//                            isShowsToggle: item.isShowsToggle,
-//                            toggleValue: item.toggleValue ?? .constant(false)
-//                        )
-//                        HorizontalDottedLineFull()
+        NavigationStack {
+            VStack(spacing: 10){
+                
+                MainHeader()
+                title
+                
+                ScrollView{
+                    LazyVStack(spacing: 16) {
+                        
+                        ForEach(configuration.sections) { section in
+                            SettingsSectionView(section: section, viewModel: viewModel)
+                                .padding(1)
+                        }
                     }
                 }
-                .padding(16)
             }
-            .background(.backmain)
+            .padding(16)
+            .background(Color.backmain)
         }
     }
     
-    struct SettingsRow: View {
-        var title: String
-        var systemImage: String
-        var isShowsToggle: Bool = false
-        @Binding var toggleValue: Bool
-        
-        var body: some View {
-            HStack(alignment: .bottom, spacing: 20){
-                Image(systemName: systemImage)
-                    .font(.system(size: 22))
-                    .frame(width: 22)
-                    .foregroundStyle(.white)
-                Text(title)
-                    .font(.system(size: 20))
-                    .fontWeight(.light)
-                    .foregroundStyle(.white)
-                Spacer()
-                if isShowsToggle {
-                    Toggle("", isOn: $toggleValue)
-                        .labelsHidden()
-                        .scaleEffect(0.75)
-                }
-            }
+    private var title: some View {
+        HStack {
+            Text("Settings")
+                .font(.system(size: 24, weight: .semibold))
+                .foregroundStyle(Color.white.opacity(0.8))
+            Spacer()
         }
-//    }
+        .padding(.bottom, 10)
+    }
 }
 
-//#Preview {
-//    SettingsView()
-//        .environmentObject(SettingsViewModel())
-//}
+struct SettingsSectionView: View {
+    
+    let section: SettingsConfiguration.Section
+    let viewModel: SettingsViewModel
+    
+    var body: some View {
+        VStack(spacing: 0){
+            ForEach(Array(section.items.enumerated()), id: \.offset) { index, item in
+                SettingsItemView(item: item, viewModel: viewModel)
+                if index < section.items.count - 1 {
+                    HorizontalDottedLineFull()
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 8)
+            .background(Color.backbutton)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.white.opacity(0.3), lineWidth: 0.5))
+    }
+}

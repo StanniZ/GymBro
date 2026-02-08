@@ -32,7 +32,7 @@ struct MainTabView: View {
        case 2:
            StatisticsView()
        case 3:
-           SettingsView(settings: settingsVM)
+           SettingsView()
        default:
            MainView()
        }
