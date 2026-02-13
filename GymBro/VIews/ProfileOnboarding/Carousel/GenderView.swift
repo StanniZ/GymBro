@@ -6,13 +6,17 @@
 import SwiftUI
 
 struct GenderView: View {
+    
     @ObservedObject var viewModel: OnboardingViewModel
+    var next: () -> Void
+    
     let heightLayer: CGFloat = 430
     let widthLayer: CGFloat = 210
     
     var body: some View {
-        VStack(spacing: 100){
+        VStack {
             title
+            Spacer()
             ZStack{
                 RoundedRectangle(cornerRadius: heightLayer / 2)
                     .fill(Color.blue.opacity(0.1))
@@ -26,15 +30,19 @@ struct GenderView: View {
             }
             Spacer()
         }
-        .padding(20)
+        .padding(16)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.backmain)
     }
     
     private var title: some View {
-        Text("Select your gender identity:")
-            .font(.system(size: 24, weight: .thin))
-            .foregroundStyle(.logincolor)
+        VStack{
+            Text("Select your gender identity:")
+                .font(.system(size: 24, weight: .thin))
+                .foregroundStyle(.logincolor)
+        }
+        .padding(.top, 12)
+        
     }
     
     private var backLayer: some View {
@@ -92,8 +100,4 @@ struct GenderView: View {
             endPoint: .bottom
         )
     }
-}
-
-#Preview {
-    GenderView(viewModel: OnboardingViewModel(repository: CoreDataUserProfileRepository()))
 }

@@ -12,7 +12,7 @@ final class OnboardingViewModel: ObservableObject {
     private let repository: UserProfileRepository
     
     init(
-        repository: CoreDataUserProfileRepository,
+        repository: UserProfileRepository = CoreDataUserProfileRepository.shared,
         userProfile: UserProfile = UserProfile(
             id: UUID(),
             name: "",

@@ -8,9 +8,11 @@ import Foundation
 import CoreData
 
 final class CoreDataUserProfileRepository: UserProfileRepository {
+    
+    static let shared = CoreDataUserProfileRepository()
     private let context: NSManagedObjectContext
     
-    init(context: NSManagedObjectContext = PersistenceController.shared.context) {
+    private init(context: NSManagedObjectContext = PersistenceController.shared.context) {
         self.context = context
     }
     

@@ -7,12 +7,11 @@ import SwiftUI
 
 struct PersonalInfoView: View {
     @StateObject var viewModel: OnboardingViewModel
-    @Binding var selection: Int
+    let next: () -> Void
     
     var body: some View {
         ZStack{
-            VStack(spacing: 16){
-                Spacer()
+            VStack(spacing: 18){
                 title
                 name
                 secondTitle
@@ -20,9 +19,7 @@ struct PersonalInfoView: View {
                 quote
                 Spacer()
             }
-            nextButton
-            .padding(.top, 70)
-            .padding(.bottom, 70)
+            .padding(.top, 30)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .padding(16)
@@ -52,7 +49,7 @@ struct PersonalInfoView: View {
                 .fill(Color.backbutton)
                 .frame(height: 50)
                 .frame(maxWidth: .infinity)
-                .shadow(color: Color.white.opacity(0.2), radius: 0.3, x: 1, y: -1)
+                .shadow(color: Color.white.opacity(0.3), radius: 0.3, x: 1, y: -1)
             TextField("", text: $viewModel.userProfile.name)
                 .textContentType(.name)
                 .font(.system(size: 24, weight: .thin))
@@ -76,7 +73,7 @@ struct PersonalInfoView: View {
                 .fill(Color.backbutton)
                 .frame(height: 50)
                 .frame(maxWidth: .infinity)
-                .shadow(color: Color.white.opacity(0.2), radius: 0.3, x: 1, y: -1)
+                .shadow(color: Color.white.opacity(0.3), radius: 0.3, x: 1, y: -1)
             TextField("", text: $viewModel.userProfile.email)
                 .keyboardType(.emailAddress)
                 .textContentType(.emailAddress)
@@ -86,36 +83,25 @@ struct PersonalInfoView: View {
         }
     }
     
-    private var nextButton: some View {
-        Button(action: {
-            Task{
-//                await viewModel.saveProfile()
-                print(viewModel.userProfile.email)
-                selection += 1
-            }
-        }) {
-//            CustomNextButton()
-        }
-        .offset(x: 130, y: 250)
-    }
-    
     private var quote: some View {
-        VStack(alignment: .trailing){
-            Spacer()
-            Text(". . .  The journey is made")
-                .lineLimit(2)
-                .font(.system(size: 24, weight: .thin, design: .rounded))
-                .foregroundColor(.orange.opacity(0.8))
-            Text("by those who take it.")
-                .italic()
-                .font(.system(size: 20, weight: .thin))
-                .foregroundColor(.orange.opacity(0.7))
+        VStack(spacing: 8){
+            HStack{
+                Text(". . .  The journey is made")
+                    .lineLimit(2)
+                    .font(.system(size: 24, weight: .thin, design: .rounded))
+                    .foregroundColor(.orange.opacity(0.8))
+                Spacer()
+            }
+            HStack{
+                Spacer()
+                Text("by those who take it.")
+                    .italic()
+                    .font(.system(size: 20, weight: .thin))
+                    .foregroundColor(.orange.opacity(0.7))
+            }
         }
-        .multilineTextAlignment(.trailing)
+        .padding(.horizontal, 10)
+        .padding(.top, 60)
     }
 }
-
-//#Preview {
-//    PersonalInfoView(viewModel: OnboardingViewModel(repository: MockUserProfileRepository()), sele)
-//}
 
