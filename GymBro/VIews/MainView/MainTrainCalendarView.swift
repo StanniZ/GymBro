@@ -17,30 +17,30 @@ struct MainTrainCelendarView: View {
         VStack {
             scrollCalendar
         }
-        .foregroundColor(.calendbtn)
-        .padding(8)
-        .overlay(border)
+        .background(Color.backbutton)
+        .cornerRadius(28)
     }
     
     private var scrollCalendar: some View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 5) {
+                HStack(spacing: 4) {
                     ForEach(alldDays, id: \.self) { date in
                         ZStack {
-                            Capsule()
-                                .stroke(calendar.isDateInToday(date) ? Color.currentday : Color.clear, lineWidth: 1)
-                                .fill(viewModel.isCompleted(date) ? Color.currentday.opacity(0.3) : Color.clear)
-                                .frame(width: 45, height: 45)
-                            VStack(spacing: 2){
+                            RoundedRectangle(cornerRadius: 22)
+                                .fill(calendar.isDateInToday(date) ? Color.currentday : Color.clear)
+                                .fill(viewModel.isCompleted(date) ? Color.green : Color.clear)
+                                .frame(width: 50, height: 50)
+                            VStack(spacing: 4){
                                 Text(WeekDay(date: date).dayNumber)
                                     .fontWeight(.bold)
-                                    .foregroundColor(Color.white)
+                                    .fontDesign(.rounded)
+                                    .foregroundColor(calendar.isDateInToday(date) ? Color.black.opacity(0.8): Color.white)
                                 Text(WeekDay(date: date).dayString)
                                     .fontWeight(.semibold)
-                                    .foregroundColor(viewModel.isCompleted(date) ? Color.white: Color.weekDay)
+                                    .foregroundColor(calendar.isDateInToday(date) ? Color.black.opacity(0.8): Color.white)
                             }
-                            .font(.system(size: 14))
+                            .font(.subheadline)
                         }
                         .id(date)
                     }
@@ -56,11 +56,6 @@ struct MainTrainCelendarView: View {
                 }
             }
         }
+        .padding(8)
     }
-    
-    private var border: some View {
-        RoundedRectangle(cornerRadius: 40)
-            .stroke(Color.borderbtn, lineWidth: 1)
-    }
-    
 }

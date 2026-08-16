@@ -6,11 +6,13 @@
 //
 import SwiftUI
 
+@MainActor
 struct OnboardingView: View {
     
-    @StateObject var viewModel = OnboardingViewModel()
+    @StateObject var viewModel = OnboardingViewModel(repository: CoreDataUserProfileRepository.shared)
     @State private var step = 0
     @State private var buttonOpacity: Double = 1.0
+    var onFinish: () -> Void
     
     var body: some View {
         ZStack{
@@ -60,17 +62,19 @@ struct OnboardingView: View {
     private var nextButton: some View {
         VStack{
             Button(action: {
-                
                 buttonOpacity = 0.0
                 
                 Task{
                     try await viewModel.saveUserProfile()
-                    print(viewModel.userProfile.age)
-                    next()
-                    
-                    try await Task.sleep(nanoseconds: 600_000_000)
-                    withAnimation(.easeInOut(duration: 0.6)) {
-                        buttonOpacity = 1.0
+                    //                    print(viewModel.userProfile.age)
+                    if step == 3 {
+                        finish()
+                    } else {
+                        next()
+                        try await Task.sleep(nanoseconds: 600_000_000)
+                        withAnimation(.easeInOut(duration: 0.6)) {
+                            buttonOpacity = 1.0
+                        }
                     }
                 }
             }) {
@@ -88,7 +92,7 @@ struct OnboardingView: View {
     }
     
     private func finish() {
-        
+        onFinish()
     }
 }
 
@@ -108,6 +112,7 @@ struct CardContainer<Content: View>: View {
     }
 }
 
-#Preview {
-    OnboardingView()
-}
+//#Preview {
+//    OnboardingView()
+//}
+

@@ -7,58 +7,63 @@
 import SwiftUI
 
 struct SettingsConfigurationBuilder {
-    
+
     static func build() -> SettingsConfiguration {
         SettingsConfiguration(sections: [
-            
-            //Account
-            .init(items: [
+
+            .init(header: "Account", items: [
                 .navigation(.init(
-                    title: "My account",
-                    icon: "person",
+                    title: "My Account",
+                    icon: "person.fill",
+                    iconColor: .accent,
                     destination: .account
                 )),
                 .navigation(.init(
-                    title: "My goals",
-                    icon: "line.3.crossed.swirl.circle",
+                    title: "My Goals",
+                    icon: "target",
+                    iconColor: .orange,
                     destination: .goals
                 ))
             ]),
-            
-            //Preferences
-            .init(items: [
+
+            .init(header: "Preferences", items: [
                 .toggle(.init(
-                    title: "Notification",
-                    icon: "bell.badge",
+                    title: "Notifications",
+                    icon: "bell.badge.fill",
+                    iconColor: .purple,
                     key: .notifications
                 )),
-                .toggle(.init(
-                    title: "Dark mode",
-                    icon: "moon",
-                    key: .darkMode
+                .navigation(.init(
+                    title: "Weight Unit",
+                    icon: "scalemass.fill",
+                    iconColor: .blue,
+                    destination: .weightUnit
                 )),
                 .navigation(.init(
-                    title: "Weight unit",
-                    icon: "scalemass",
-                    destination: .weightUnit
+                    title: "Apple Health",
+                    icon: "heart.fill",
+                    iconColor: .red,
+                    destination: .appleHealth
                 ))
             ]),
-            
-            //Other
-            .init(items: [
+
+            .init(header: "General", items: [
                 .navigation(.init(
-                    title: "Workout history",
-                    icon: "magazine",
+                    title: "Workout History",
+                    icon: "clock.arrow.circlepath",
+                    iconColor: .green,
                     destination: .workoutHistory
                 )),
                 .navigation(.init(
                     title: "Help & Support",
-                    icon: "point.3.connected.trianglepath.dotted",
+                    icon: "questionmark.circle.fill",
+                    iconColor: .teal,
                     destination: .support
                 )),
                 .navigation(.init(
-                    title: "Log out",
+                    title: "Log Out",
                     icon: "rectangle.portrait.and.arrow.right",
+                    iconColor: .red,
                     destination: .logout
                 ))
             ])

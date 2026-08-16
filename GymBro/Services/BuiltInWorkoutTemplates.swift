@@ -6,238 +6,197 @@
 //
 import SwiftUI
 
-final class DataGridBuildSession {
+final class BuiltInWorkoutTemplates {
 
-    static func getBuildSession() -> [BuildSessionModel] {
+    static func getBuildSession() -> [WorkoutTemplateModel] {
         [
             // MARK: - Chest & Triceps
 
-            BuildSessionModel(
-                muscleName: "Chest & Triceps",
+            WorkoutTemplateModel(
+                name: "Chest & Triceps",
                 durationMinutes: 60,
                 dayOfWeek: "Monday",
-                isFinished: false,
+                calories: 300,
                 exercises: [
                     // ID 1 — Barbell Bench Press
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 1,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
 
                     // ID 5 — Incline Dumbbell Press
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 5,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
 
                     // ID 10 — Weighted Dips
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 10,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
 
                     // ID 27 — Cable Triceps Pushdown
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 27,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
 
                     // ID 30 — Close-Grip Bench Press
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 30,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     )
-                ],
-                calories: 450
+                ]
             ),
 
             // MARK: - Back & Biceps
 
-            BuildSessionModel(
-                muscleName: "Back & Biceps",
+            WorkoutTemplateModel(
+                name: "Back & Biceps",
                 durationMinutes: 65,
                 dayOfWeek: "Tuesday",
-                isFinished: false,
+                calories: 500,
                 exercises: [
-                    // ID 36 — Pull-Up
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 36,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
-
-                    // ID 42 — Seated Cable Row
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 42,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
-
-                    // ID 46 — Bent Over Barbell Row
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 46,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
-
-                    // ID 21 — EZ Bar Curl
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 21,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
-
-                    // ID 23 — Hammer Curl
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 23,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     )
-                ],
-                calories: 500
+                ]
             ),
 
             // MARK: - Legs & Glutes
 
-            BuildSessionModel(
-                muscleName: "Legs & Glutes",
+            WorkoutTemplateModel(
+                name: "Legs & Glutes",
                 durationMinutes: 70,
                 dayOfWeek: "Wednesday",
-                isFinished: false,
+                calories: 550,
                 exercises: [
-                    // ID 66 — Back Squat
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 66,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
-
-                    // ID 70 — Bulgarian Split Squat
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 70,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
-
-                    // ID 79 — Lying Leg Curl
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 79,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
-
-                    // ID 83 — Hip Thrust
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 83,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
-
-                    // ID 91 — Standing Calf Raise
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 91,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     )
-                ],
-                calories: 550
+                ]
             ),
 
             // MARK: - Shoulders & Core
 
-            BuildSessionModel(
-                muscleName: "Shoulders & Core",
+            WorkoutTemplateModel(
+                name: "Shoulders & Core",
                 durationMinutes: 55,
                 dayOfWeek: "Thursday",
-                isFinished: false,
+                calories: 400,
                 exercises: [
-                    // ID 11 — Barbell Overhead Press
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 11,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
-
-                    // ID 16 — Face Pull
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 16,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
-
-                    // ID 100 — Ab Wheel Rollout
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 100,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
-
-                    // ID 104 — Hanging Leg Raise
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 104,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
-
-                    // ID 109 — Cable Wood Chop
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 109,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     )
-                ],
-                calories: 400
+                ]
             ),
 
             // MARK: - Full Body Strength
 
-            BuildSessionModel(
-                muscleName: "Full Body Strength",
+            WorkoutTemplateModel(
+                name: "Full Body Strength",
                 durationMinutes: 75,
                 dayOfWeek: "Friday",
-                isFinished: false,
+                calories: 600,
                 exercises: [
-                    // ID 56 — Conventional Deadlift
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 56,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
-
-                    // ID 67 — Front Squat
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 67,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
-
-                    // ID 1 — Barbell Bench Press
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 1,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
-
-                    // ID 36 — Pull-Up
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 36,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     ),
-
-                    // ID 118 — Kettlebell Swing
-                    WorkoutExercise(
+                    TemplateExercise(
                         exerciseID: 118,
-                        sets: 1,
+                        setsCount: 1,
                         reps: 0
                     )
-                ],
-                calories: 600
+                ]
             )
         ]
     }

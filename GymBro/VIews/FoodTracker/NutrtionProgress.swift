@@ -1,105 +1,105 @@
-//
-//  NutrtionProgress.swift
-//  GymBro
-//
-//  Created by macbook on 14/01/2026.
-//
 import SwiftUI
 
-struct NutritionProgress: View {
-    let totalCalories: Int
-    let currentCalories: Int
-    let progress: Double
-    let lineWidthRingProgress: CGFloat = 20
-    let arc: Double = 0.66
-    
+struct NutritionProgressCard: View {
+    @ObservedObject var vm: FoodTrackerViewModel
+
+    private let arc: Double = 0.66
+    private let lineWidth: CGFloat = 18
+
     var body: some View {
-        HStack(spacing: 10) {
+        HStack(spacing: 16) {
             ZStack {
-                ringProgress
-                progressCalories
+                ringBackground
+                ringFill
+                calorieLabel
             }
-            .offset(y: 15)
-            VStack(spacing: 16) {
-                NutrientRow(
+            .frame(width: 130, height: 130)
+            .offset(y: 12)
+
+            VStack(spacing: 14) {
+                MacroRow(
                     title: "Carbs",
-                    value: "57",
-                    totalValue: "190",
-                    progress: 0.2,
-                    color: .white
+                    current: vm.totalCarbs,
+                    target: vm.targets?.carbs ?? 0,
+                    progress: vm.carbsProgress,
+                    color: Color(hex: "A78BFA")
                 )
-                NutrientRow(
-                    title: "Proteins",
-                    value: "65",
-                    totalValue: "120",
-                    progress: 0.7,
-                    color: .white
+                MacroRow(
+                    title: "Protein",
+                    current: vm.totalProtein,
+                    target: vm.targets?.protein ?? 0,
+                    progress: vm.proteinProgress,
+                    color: Color(hex: "34D399")
                 )
-                NutrientRow(
+                MacroRow(
                     title: "Fat",
-                    value: "18",
-                    totalValue: "60",
-                    progress: 0.3,
-                    color: .white
+                    current: vm.totalFat,
+                    target: vm.targets?.fat ?? 0,
+                    progress: vm.fatProgress,
+                    color: Color(hex: "FB923C")
                 )
             }
+            .frame(maxWidth: .infinity)
         }
-        .padding(10)
-        .background(Color.purple.opacity(0.05))
-        .clipShape(RoundedRectangle(cornerRadius: 20))
-        .overlay(
-            RoundedRectangle(cornerRadius: 20)
-                .stroke(Color.white.opacity(0.2), lineWidth: 1))
-        .frame(maxHeight: 190)
+        .padding(16)
+        .background(Color.backbutton)
+        .cornerRadius(20)
     }
-    
-    private var ringProgress: some View {
-        ZStack {
-            Circle()
-                .trim(from: 0, to: arc)
-                .stroke(Color.white.opacity(0.1), style: StrokeStyle(lineWidth: lineWidthRingProgress, lineCap: .round))
-                .rotationEffect(.degrees(90 + (1 - arc) * 180))
-            Circle()
-                .trim(from: 0, to: arc * progress)
-                .stroke(Color.white, style: StrokeStyle(lineWidth: lineWidthRingProgress, lineCap: .round))
-                .rotationEffect(.degrees(90 + (1 - arc) * 180))
-        }
-        .padding([.leading, .trailing], 10)
+
+    private var ringBackground: some View {
+        Circle()
+            .trim(from: 0, to: arc)
+            .stroke(Color.white.opacity(0.08), style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
+            .rotationEffect(.degrees(90 + (1 - arc) * 180))
     }
-    
-    private var progressCalories: some View {
-        VStack(spacing: 4) {
-            Text(String(currentCalories))
-                .font(Font.system(size: 29, weight: .regular))
+
+    private var ringFill: some View {
+        Circle()
+            .trim(from: 0, to: arc * vm.caloriesProgress)
+            .stroke(Color.currentday, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
+            .rotationEffect(.degrees(90 + (1 - arc) * 180))
+            .animation(.easeOut(duration: 0.4), value: vm.caloriesProgress)
+    }
+
+    private var calorieLabel: some View {
+        VStack(spacing: 2) {
+            Text("\(vm.totalCalories)")
+                .font(.system(size: 26, weight: .bold, design: .rounded))
                 .foregroundColor(.white)
-            Text("Your goal \(totalCalories)")
-                .font(.system(size: 14, weight: .regular))
-                .foregroundStyle(Color.white.opacity(0.5))
+            Text("/ \(vm.targets?.calories ?? 0)")
+                .font(AppFont.caption)
+                .foregroundColor(.white.opacity(0.4))
+            Text("kcal")
+                .font(AppFont.caption)
+                .foregroundColor(.white.opacity(0.4))
         }
     }
 }
 
-struct NutrientRow: View {
-    var title: String
-    var value: String
-    var totalValue: String
-    var progress: Double
-    var color: Color
-    
+private struct MacroRow: View {
+    let title: String
+    let current: Double
+    let target: Double
+    let progress: Double
+    let color: Color
+
     var body: some View {
-        VStack{
-            HStack(spacing: 0){
+        VStack(spacing: 4) {
+            HStack {
                 Text(title)
+                    .font(AppFont.caption)
+                    .foregroundColor(.white.opacity(0.5))
                 Spacer()
-                Text(value)
-                    .foregroundStyle(Color.white)
-                Text("/\(totalValue)")
+                Text(String(format: "%.0fg", current))
+                    .font(AppFont.caption)
+                    .foregroundColor(.white)
+                Text(String(format: "/ %.0fg", target))
+                    .font(AppFont.caption)
+                    .foregroundColor(.white.opacity(0.4))
             }
-            .font(.system(size: 14, weight: .medium))
-            .foregroundStyle(Color.white.opacity(0.5))
-            
             ProgressView(value: progress)
                 .tint(color)
+                .animation(.easeOut(duration: 0.4), value: progress)
         }
     }
 }

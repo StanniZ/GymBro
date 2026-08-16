@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct ExerciseDetails: View {
-    let exercise: ExerciseModel
+    let exercise: SessionExerciseModel
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -20,7 +20,7 @@ struct ExerciseDetails: View {
     
     private var exerciseName: some View {
         HStack {
-            Text(exercise.name)
+            Text(String(exercise.exerciseID))
                 .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(.white)
             Spacer()

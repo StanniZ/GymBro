@@ -26,7 +26,6 @@ extension TrainingSessionEntity {
     @NSManaged public var isFinished: Bool
     @NSManaged public var name: String?
     @NSManaged public var startedAt: Date?
-    @NSManaged public var templateID: UUID?
     @NSManaged public var exercises: NSSet?
 
 }

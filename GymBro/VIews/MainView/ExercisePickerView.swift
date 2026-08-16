@@ -59,19 +59,15 @@ struct ExercisePickerView: View {
             HStack(spacing: 8) {
                 ForEach(MuscleCategory.allCases, id: \.self) { category in
                     Button(action: { selectedCategory = category }) {
-                        HStack(spacing: 4) {
-                            Image(systemName: category.icon)
-                                .font(.system(size: 11))
-                            Text(category.rawValue)
-                                .font(AppFont.caption)
-                        }
-                        .foregroundColor(selectedCategory == category ? .backmain : .white)
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 7)
-                        .background(
-                            Capsule()
-                                .fill(selectedCategory == category ? Color.currentday : Color.backbutton)
-                        )
+                        Text(category.rawValue)
+                            .font(AppFont.caption)
+                            .foregroundColor(selectedCategory == category ? .backmain : .white)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 7)
+                            .background(
+                                Capsule()
+                                    .fill(selectedCategory == category ? Color.currentday : Color.backbutton)
+                            )
                     }
                 }
             }

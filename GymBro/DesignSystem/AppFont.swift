@@ -27,16 +27,16 @@ enum AppFont {
     
     static let body = Font.system(
         size: 17,
-        weight: .regular
+        weight: .medium
     )
     
     static let subheadline = Font.system(
             size: 15,
-            weight: .medium
+            weight: .regular
         )
 
         static let caption = Font.system(
             size: 13,
-            weight: .medium
+            weight: .light
         )
 }

@@ -6,11 +6,10 @@
 import SwiftUI
 
 struct MainTabView: View {
-    
-//    @EnvironmentObject var currentSessionProvider: CurrentSessionProvider
+
     @EnvironmentObject var profileVM: OnboardingViewModel
-    @EnvironmentObject var photoVM: ProfilePhotoViewModel
     @EnvironmentObject var settingsVM: SettingsViewModel
+    @EnvironmentObject var foodVM: FoodTrackerViewModel
     @State private var selection = 0
    
    var body: some View {
@@ -28,7 +27,7 @@ struct MainTabView: View {
        case 0:
            MainView()
        case 1:
-           FoodTracker()
+           FoodTracker(selectedTab: $selection)
        case 2:
            StatisticsView()
        case 3:
@@ -40,20 +39,20 @@ struct MainTabView: View {
    
    private var backgroundTab: some View {
        ZStack {
-           Capsule()
+           RoundedRectangle(cornerRadius: 30)
                .fill(Color.backbutton)
-               .overlay(
-                   Capsule()
-                       .stroke(Color.borderbtn, lineWidth: 1)
-               )
-               .frame(maxHeight: 50)
+//               .overlay(
+//                   RoundedRectangle(cornerRadius: 30)
+//                       .stroke(Color.borderbtn, lineWidth: 1)
+//               )
+               .frame(maxHeight: 60)
                .padding(.horizontal, 16)
            
            HStack(spacing: 60) {
-               TabItem(index: 0, systemImageName: "house.fill")
-               TabItem(index: 1, systemImageName: "fork.knife.circle")
-               TabItem(index: 2, systemImageName: "chart.bar.xaxis.ascending")
-               TabItem(index: 3, systemImageName: "gearshape.fill")
+               TabItem(index: 0, imageName: "home", size: 26)
+               TabItem(index: 1, imageName: "cherry", size: 30)
+               TabItem(index: 2, imageName: "statistics", size: 30)
+               TabItem(index: 3, imageName: "user", size: 26)
            }
            .padding(.horizontal, 40)
            .padding(.vertical, 16)
@@ -61,15 +60,16 @@ struct MainTabView: View {
        .padding(.bottom, 16)
    }
    
-   private func TabItem(index: Int, systemImageName: String) -> some View {
+   private func TabItem(index: Int, imageName: String, size: CGFloat) -> some View {
        Button(action: {
            selection = index
        }) {
            VStack {
-               Image(systemName: systemImageName)
+               Image(imageName)
                    .resizable()
+                   .renderingMode(.template)
                    .aspectRatio(contentMode: .fit)
-                   .frame(width: 26, height: 26)
+                   .frame(width: size, height: size)
                    .foregroundStyle(selection == index ? Color.currentday : Color.weekDay)
            }
        }

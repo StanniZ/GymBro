@@ -52,7 +52,7 @@ struct DetailsSessionView: View {
     }
     
     private var header: some View {
-        Text(session.muscleName)
+        Text(session.name)
             .font(.system(size: 22, weight: .medium))
             .foregroundStyle(.currentday)
     }
@@ -61,7 +61,7 @@ struct DetailsSessionView: View {
         HStack(spacing: 8) {
             Image(systemName: "calendar")
                 .foregroundColor(.white.opacity(0.5))
-            if let timestamp = session.timestamp {
+            if let timestamp = session.finishedAt {
                 Text(timestamp.dateForSessionHistory)
             } else {
                 Text("-")

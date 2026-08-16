@@ -7,27 +7,38 @@
 import SwiftUI
 
 struct TrackWorkoutView: View {
-    @ObservedObject var todaySession: TodaySessionViewModel
+    @EnvironmentObject var viewModel: TodaySessionViewModel
     @EnvironmentObject var sessionTimer: SessionTimerViewModel
     @Environment(\.dismiss) private var dismiss
-    var startTimerButton: Bool = false
-    
+
+    private var todaySession: TrainingSessionModel {
+        viewModel.draftSession
+    }
+
     var body: some View {
-        VStack(spacing: 24) {
-            HStack{
-                header
+        VStack(spacing: 20) {
+            // Top row: header + start/finish button
+            HStack(alignment: .top) {
+                sessionHeader
                 Spacer()
-                startSessionButton
+                actionButton
             }
-            VStack(spacing: 12){
+
+            // Timer display appears below header when running
+            if sessionTimer.isRunning {
+                timerDisplay
+            }
+
+            VStack(spacing: 12) {
                 HorizontalDottedLineFull()
                 parametersSession
                 HorizontalDottedLineFull()
             }
+
             ScrollView(.vertical, showsIndicators: false) {
                 exercisesSession
+                    .padding(.bottom, 16)
             }
-            Spacer()
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
         .padding(16)
@@ -40,56 +51,62 @@ struct TrackWorkoutView: View {
             ToolbarItem(placement: .principal) {
                 title
             }
-            ToolbarItem(placement: .topBarTrailing) {
-                finishSessionButton
+        }
+        .onChange(of: viewModel.state) { newState in
+            if newState == .saved {
+                sessionTimer.finishSession()
+                dismiss()
             }
         }
-
     }
-    
+
     private var title: some View {
         Text("Track session")
             .font(.system(size: 18, weight: .medium))
             .foregroundColor(.white)
     }
-    
-    private var header: some View {
-        VStack(alignment: .leading, spacing: 20) {
+
+    private var sessionHeader: some View {
+        VStack(alignment: .leading, spacing: 8) {
             Text("Workout session")
                 .font(.system(size: 15, weight: .medium))
                 .foregroundStyle(.white.opacity(0.5))
-            Text(todaySession.draftSession.muscleName)
+            Text(todaySession.name)
                 .font(.system(size: 22, weight: .medium))
                 .foregroundStyle(.white)
         }
     }
-    
-    private var startSessionButton: some View {
-            Button(action: {
-                
-            }) {
-                Image(systemName: "play.circle.fill")
-                    .font(.system(size: 30))
-                    .foregroundColor(.currentday)
-                    .padding(2)
-                Text("Start")
-                    .font(.system(size: 16, weight: .medium))
-                    .foregroundColor(.white)
+
+    private var timerDisplay: some View {
+        VStack(spacing: 6) {
+            Text(sessionTimer.formattedTime)
+                .font(.system(size: 52, weight: .bold, design: .monospaced))
+                .foregroundStyle(.white)
+            HStack(spacing: 6) {
+                Circle()
+                    .fill(Color.red)
+                    .frame(width: 7, height: 7)
+                Text("Session in progress")
+                    .font(.system(size: 13, weight: .medium))
+                    .foregroundStyle(.white.opacity(0.5))
             }
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .padding(.vertical, 4)
     }
-    
+
     private var parametersSession: some View {
         HStack {
-            parameterSession(value: "\(todaySession.draftSession.countExercise)", title: "Total Exercises")
+            parameterSession(value: "\(todaySession.countExercise)", title: "Total Exercises")
             VerticalDottedLine(dotSize: 1, spacing: 2, height: 50)
-            parameterSession(value: "\(todaySession.draftSession.durationMinutes)", title: "Duration")
+            parameterSession(value: "\(todaySession.durationMinutes)", title: "Duration")
             VerticalDottedLine(dotSize: 1, spacing: 2, height: 50)
-            parameterSession(value: "\(todaySession.draftSession.calories)", title: "Calories")
+            parameterSession(value: "\(todaySession.calories)", title: "Calories")
         }
     }
-    
+
     private func parameterSession(value: String, title: String) -> some View {
-        VStack(alignment: .center ,spacing: 8){
+        VStack(alignment: .center, spacing: 8) {
             Text(value)
                 .font(.system(size: 22, weight: .medium))
                 .foregroundStyle(.white)
@@ -99,58 +116,95 @@ struct TrackWorkoutView: View {
         }
         .frame(maxWidth: .infinity, alignment: .center)
     }
-    
+
     private var exercisesSession: some View {
-        VStack(spacing: 16){
-            ForEach(todaySession.draftSession.exercises.indices, id: \.self) { index in
-                ExerciseList(exercise: $todaySession.draftSession.exercises[index])
-                if index < todaySession.draftSession.exercises.count - 1 {
-                    HorizontalDottedLineFull()
-                }
+        VStack(spacing: 16) {
+            ForEach($viewModel.draftSession.exercises) { $exercise in
+                ExerciseList(exercise: $exercise)
             }
         }
     }
-    
+
+    // MARK: - Top action button (compact, top-right)
+
     @ViewBuilder
-    private var finishSessionButton: some View {
-        VStack {
-            Button {
-                withAnimation(.easeInOut(duration: 1)){
-                    todaySession.draftSession.timestamp = Date()
-                    todaySession.finishSession()
-                }
-            } label: {
-                switch todaySession.state {
-                case .ready:
-                    Text("SAVE")
-                case .saving:
-                    HStack(spacing: 8){
-                        ProgressView()
-                        Text("Saving...")
-                    }
-                case .saved:
-                    withAnimation(.easeInOut(duration: 1)){
-                        Label("Saved", systemImage: "checkmark.circle.fill")
-                    }
-                case .failed:
-                    Text("Retry please...")
-                }
-            }
-            .font(.system(size: 14, weight: .medium))
-            .foregroundStyle(.logincolor)
-            .disabled(todaySession.state != .ready)
-            .opacity(todaySession.state != .ready ? 0.6 : 1)
+    private var actionButton: some View {
+        if sessionTimer.isRunning {
+            finishButton
+        } else {
+            startButton
         }
     }
-    
+
+    private var startButton: some View {
+        Button {
+            viewModel.startSession()
+            sessionTimer.start()
+        } label: {
+            HStack(spacing: 6) {
+                Image(systemName: "play.circle.fill")
+                    .font(.system(size: 28))
+                    .foregroundColor(.currentday)
+                Text("Start")
+                    .font(.system(size: 16, weight: .medium))
+                    .foregroundColor(.white)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var finishButton: some View {
+        Button {
+            viewModel.finishSession(elapsedSeconds: sessionTimer.elapsedTime)
+        } label: {
+            switch viewModel.state {
+            case .ready:
+                HStack(spacing: 6) {
+                    Image(systemName: "stop.circle.fill")
+                        .font(.system(size: 28))
+                        .foregroundColor(.red)
+                    Text("Finish")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(.white)
+                }
+            case .saving:
+                HStack(spacing: 6) {
+                    ProgressView()
+                        .tint(.currentday)
+                    Text("Saving...")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(.white)
+                }
+            case .saved:
+                HStack(spacing: 6) {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 28))
+                        .foregroundColor(.currentday)
+                    Text("Saved!")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(.white)
+                }
+            case .failed:
+                HStack(spacing: 6) {
+                    Image(systemName: "exclamationmark.circle.fill")
+                        .font(.system(size: 28))
+                        .foregroundColor(.red)
+                    Text("Retry")
+                        .font(.system(size: 16, weight: .medium))
+                        .foregroundColor(.white)
+                }
+            }
+        }
+        .disabled(viewModel.state == .saving)
+    }
+
     private var backButton: some View {
-        Button(action: {
+        Button {
             dismiss()
-        }) {
+        } label: {
             Image(systemName: "chevron.left")
                 .foregroundColor(.white)
                 .font(.system(size: 18))
         }
     }
 }
-

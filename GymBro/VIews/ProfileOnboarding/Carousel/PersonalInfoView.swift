@@ -6,7 +6,7 @@
 import SwiftUI
 
 struct PersonalInfoView: View {
-    @StateObject var viewModel: OnboardingViewModel
+    @ObservedObject var viewModel: OnboardingViewModel
     let next: () -> Void
     
     var body: some View {

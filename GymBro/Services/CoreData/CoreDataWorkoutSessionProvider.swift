@@ -17,9 +17,6 @@ final class CoreDataWorkoutSessionProvider: WorkoutSessionProviderProtocol, Stat
         self.context = context
     }
     
-    func fetchTodaysSession() -> TrainingSessionModel? {
-    }
-    
     func saveTodaysSession(_ session: TrainingSessionModel) async throws {
         
     }
@@ -31,7 +28,7 @@ final class CoreDataWorkoutSessionProvider: WorkoutSessionProviderProtocol, Stat
             finished.id = UUID()
             finished.isFinished = true
             finished.finishedAt = Date()
-            _ = finished.toEntity(context: bgContext)
+            _ = TrainingSessionMapper.toEntity(finished, context: bgContext)
             
             try bgContext.save()
         }
@@ -43,9 +40,11 @@ final class CoreDataWorkoutSessionProvider: WorkoutSessionProviderProtocol, Stat
         return try await ctx.perform {
             let req: NSFetchRequest<TrainingSessionEntity> = TrainingSessionEntity.fetchRequest()
             req.predicate = NSPredicate(format: "isFinished == YES")
-            req.sortDescriptors = [NSSortDescriptor(key: "timestamp", ascending: false)]
+            req.sortDescriptors = [NSSortDescriptor(keyPath: \TrainingSessionEntity.finishedAt, ascending: true)]
             let entities = try ctx.fetch(req)
-            return entities.map { $0.toModel() }
+            return entities.map {
+                TrainingSessionMapper.toModel($0)
+            }
         }
     }
     

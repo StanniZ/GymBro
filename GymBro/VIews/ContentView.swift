@@ -10,33 +10,53 @@ import SwiftUI
 struct ContentView: View {
     
     @EnvironmentObject var appState: AppState
+    @State private var welcomeViewShown: Bool = true
     
     var body: some View {
-        GeometryReader { _ in
-            currentScreen
-                .transition(
-                    .asymmetric(insertion: .move(edge: .trailing), removal: .move(edge: .leading)))
-                .animation(.easeInOut(duration: 0.35), value: appState.currentScreen)
+        ZStack {
+            switch appState.phase {
+            case .firstLaunch:
+                FirstLaunchFlowView()
+                    .transition(.move(edge: .trailing))
+            case .mainFlow:
+                MainTabView()
+                    .transition(.move(edge: .trailing))
+            }
+            
+            if welcomeViewShown {
+                WelcomeView {
+                    withAnimation(.easeInOut(duration: 2.0)){
+                        welcomeViewShown = false
+                    }
+                }
+                .transition(.opacity)
+            }
         }
+        .animation(.easeInOut(duration: 2.0), value: appState.phase)
 //        .onAppear {
 //            CoreDataSeeder.shared.deleteAllSession()
 //        }
     }
+}
+
+struct FirstLaunchFlowView: View {
+    @EnvironmentObject var appState: AppState
+    @State private var step: Step = .onboarding
     
-    @ViewBuilder
-    private var currentScreen: some View {
-        switch appState.currentScreen {
-        case .welcome:
-            WelcomeView()
-        case .login:
-            LoginView()
-        case .main:
-            MainTabView()
+    enum Step {
+        case onboarding
+        case login
+    }
+    var body: some View {
+        switch step {
+        case .onboarding:
+            OnboardingView {
+                step = .login
+            }
+            case .login:
+            LoginView {
+                appState.completeFirstLaunch()
+            }
         }
     }
 }
-
-
-//#Preview {
-//    ContentView().environment(\.managedObjectContext, PersistenceController.shared.context)
-//}

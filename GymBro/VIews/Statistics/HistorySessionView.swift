@@ -57,50 +57,56 @@ struct HistorySessionView: View {
 struct CellHistorySession: View {
     let session: TrainingSessionModel
     let onDelete: (UUID) -> Void
-    
+
     var body: some View {
-        NavigationLink(destination: DetailsSessionView(session: session)) {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    nameSession
-                    Spacer()
-                    deleteSession
+        // ZStack: NavigationLink as background, delete button on top so it
+        // intercepts its own taps without triggering navigation.
+        ZStack(alignment: .topTrailing) {
+            NavigationLink(destination: DetailsSessionView(session: session)) {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        nameSession
+                        Spacer()
+                        // Transparent placeholder keeps the same height as the button
+                        Color.clear.frame(width: 32, height: 32)
+                    }
+                    dateSession
+                    HorizontalDottedLineFull()
+                    infoSession
                 }
-                dateSession
-                HorizontalDottedLineFull()
-                infoSession
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(16)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.white.opacity(0.3), lineWidth: 0.5)
+                )
             }
-            .frame(maxWidth: .infinity, maxHeight: 100, alignment: .leading)
-            .padding(16)
-            .overlay(
-                RoundedRectangle(cornerRadius: 8)
-                    .stroke(Color.white.opacity(0.3), lineWidth: 0.5)
-            )
+
+            // Delete button sits above NavigationLink and captures its own taps
+            Button {
+                onDelete(session.id)
+            } label: {
+                Image(systemName: "xmark")
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundColor(.white.opacity(0.5))
+                    .frame(width: 32, height: 32)
+                    .contentShape(Rectangle())
+            }
+            .padding(12)
         }
     }
-    
+
     private var nameSession: some View {
-        Text(session.muscleName)
+        Text(session.name)
             .font(.system(size: 18, weight: .medium))
             .foregroundStyle(.white)
-    }
-    
-    private var deleteSession: some View {
-        Button(action: { 
-            print(session.id)
-            onDelete(session.id)
-        }) {
-            Image(systemName: "xmark")
-                .font(.system(size: 16))
-                .foregroundColor(.white.opacity(0.5))
-        }
     }
     
     private var dateSession: some View {
         HStack(spacing: 8){
             Image(systemName: "calendar")
                 .foregroundColor(.white.opacity(0.5))
-            if let timestamp = session.timestamp {
+            if let timestamp = session.finishedAt {
                 Text(timestamp.dateForSessionHistory)
             } else {
                 Text("-")

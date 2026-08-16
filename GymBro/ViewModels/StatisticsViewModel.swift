@@ -6,6 +6,6 @@
 //
 import Foundation
 
-//final class StatisticsViewModel {
-//    
-//}
+final class StatisticsViewModel {
+    
+}

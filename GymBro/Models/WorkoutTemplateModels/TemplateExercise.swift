@@ -11,11 +11,13 @@ struct TemplateExercise: Identifiable {
     var exerciseID: Int
     var setsCount: Int
     var reps: Int
+//    var position: Int
     
     init(id: UUID = UUID(), exerciseID: Int, setsCount: Int, reps: Int) {
         self.id = id
         self.exerciseID = exerciseID
         self.setsCount = setsCount
         self.reps = reps
+//        self.position = position
     }
 }

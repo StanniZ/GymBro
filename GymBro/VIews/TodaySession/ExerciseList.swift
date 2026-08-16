@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct ExerciseList: View {
-    @Binding var exercise: ExerciseModel
+    @Binding var exercise: SessionExerciseModel
     @State private var setId: UUID? = nil
     @State private var reps: Int = 8
     @State private var weight: Double = 20
@@ -23,9 +23,13 @@ struct ExerciseList: View {
         
     }
     
+    private var exerciseName: String {
+        ExerciseLoader.byID[exercise.exerciseID]?.name ?? "Exercise \(exercise.exerciseID)"
+    }
+
     private var exerciseHeader: some View {
         HStack(spacing: 8) {
-            Text(exercise.name)
+            Text(exerciseName)
                 .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(.white)
             Button(action: {
@@ -137,7 +141,7 @@ struct ExerciseList: View {
     
     private func addSet() {
         if exercise.sets.count < 20 {
-            exercise.sets.append(ExerciseSetModel(reps: 12, timestamp: Date(), weightKg: 20))
+            exercise.sets.append(ExerciseSetModel(reps: 0, weightKg: 0, isCompleted: false, timestamp: Date(), position: 1))
         }
     }
 }

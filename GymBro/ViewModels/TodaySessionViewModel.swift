@@ -7,51 +7,71 @@
 import SwiftUI
 import Combine
 
-// ViewModel для работы с тренировкой на сегодня
 @MainActor
 final class TodaySessionViewModel: ObservableObject {
-    
-    enum SaveState: Equatable{ case ready, saving, saved, failed(String)}
-    
-    // Текущая редактируемая (копия) тренировки для UI
-    @Published var draftSession: TrainingSessionModel
-    // Состояние сессии
+
+    enum SaveState: Equatable { case ready, saving, saved, failed(String) }
+
     @Published var state: SaveState = .ready
-    
-    // Провайдер данных (инъекция зависимости, любой источник)
-    private let provider: TodaysSessionProviderProtocol
-    
+    @Published var draftSession: TrainingSessionModel
+
+    private let provider: WorkoutSessionProviderProtocol
+    private let currentSessionProvider: CurrentSessionManager
     private var cancellable: AnyCancellable?
-    
-    // MARK: - Инициализация ViewModel
-    init(provider: TodaysSessionProviderProtocol, currentSessionProvider: CurrentSessionProvider) {
-        self.provider = provider                           // сохраняем источник данных
-        if let template = provider.fetchTodaysSession() {
-            self.draftSession = template
-        } else {
-            print("no template")
-            self.draftSession = .empty
-        }
-        
+
+    init(provider: WorkoutSessionProviderProtocol, currentSessionProvider: CurrentSessionManager) {
+        self.provider = provider
+        self.currentSessionProvider = currentSessionProvider
+        self.draftSession = currentSessionProvider.currentSession
+
         cancellable = currentSessionProvider.$currentSession
-            .compactMap { $0 }
-            .assign(to: \.draftSession, on: self)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] session in
+                self?.draftSession = session
+                self?.state = .ready
+            }
     }
-    
-    // MARK: - Сохранить изменения пользователя и закончить текущую сессию
-    func finishSession() {
+
+    func startSession() {
+        draftSession.startedAt = Date()
+    }
+
+    func finishSession(elapsedSeconds: TimeInterval = 0) {
         guard state == .ready else { return }
-        withAnimation(.easeInOut(duration: 0.3)){
-            state = .saving
+        let endDate = Date()
+        draftSession.finishedAt = endDate
+        draftSession.isFinished = true
+
+        // Replace template calories with a real estimate from actual duration
+        if elapsedSeconds > 0 {
+            let storedWeight = UserDefaults.standard.double(forKey: "gymbro_user_weight_kg")
+            let weightKg = storedWeight > 0 ? storedWeight : 70.0
+            let estimate = CalorieEstimator.estimate(durationSeconds: elapsedSeconds, weightKg: weightKg)
+            draftSession.calories = estimate.calories
+            draftSession.durationMinutes = max(1, Int(elapsedSeconds / 60))
         }
-        Task{
-            do{
-                try await provider.finishTodaysSession(draftSession)
-                withAnimation(.easeInOut(duration: 0.3)){
-                    state = .saved
-                }
+
+        withAnimation(.easeInOut(duration: 0.3)) { state = .saving }
+
+        let snapshot = draftSession
+
+        Task {
+            do {
+                // 1. CoreData — always the source of truth
+                try await provider.finishTodaysSession(snapshot)
+
+                withAnimation(.easeInOut(duration: 0.3)) { state = .saved }
+                currentSessionProvider.clearCurrentSession()
+
+                // 2. HealthKit — optional, fire-and-forget
+                await WorkoutHealthService.shared.saveWorkoutIfEnabled(
+                    name: snapshot.name,
+                    startDate: snapshot.startedAt,
+                    endDate: snapshot.finishedAt ?? endDate,
+                    calories: snapshot.calories
+                )
             } catch {
-                withAnimation(.easeInOut(duration: 0.3)){
+                withAnimation(.easeInOut(duration: 0.3)) {
                     state = .failed(error.localizedDescription)
                 }
                 print("error saving session: \(error)")

@@ -1,0 +1,1267 @@
+[
+  {
+    "id": 1,
+    "name": "Barbell Bench Press",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": ["triceps", "shoulder_front"],
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 2,
+    "name": "Incline Barbell Bench Press",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": ["triceps", "shoulder_front"],
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 3,
+    "name": "Decline Barbell Bench Press",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": ["triceps"],
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 4,
+    "name": "Dumbbell Bench Press",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": ["triceps", "shoulder_front"],
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 5,
+    "name": "Incline Dumbbell Press",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": ["triceps", "shoulder_front"],
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 6,
+    "name": "Chest Fly",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [],
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 7,
+    "name": "Cable Fly",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 8,
+    "name": "Pec Deck Fly",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 9,
+    "name": "Machine Chest Press",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": ["triceps"],
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 10,
+    "name": "Weighted Dips",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": ["triceps", "shoulder_front"],
+    "equipment": "bodyweight",
+    "difficulty": "advanced",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 11,
+    "name": "Barbell Overhead Press",
+    "primaryMuscle": "shoulder_front",
+    "secondaryMuscles": ["triceps"],
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 12,
+    "name": "Dumbbell Shoulder Press",
+    "primaryMuscle": "shoulder_front",
+    "secondaryMuscles": ["triceps"],
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 13,
+    "name": "Arnold Press",
+    "primaryMuscle": "shoulder_front",
+    "secondaryMuscles": ["triceps"],
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 14,
+    "name": "Front Raise",
+    "primaryMuscle": "shoulder_front",
+    "secondaryMuscles": [],
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 15,
+    "name": "Cable Front Raise",
+    "primaryMuscle": "shoulder_front",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+
+  {
+    "id": 16,
+    "name": "Face Pull",
+    "primaryMuscle": "shoulder_back",
+    "secondaryMuscles": ["trapezius"],
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 17,
+    "name": "Reverse Pec Deck",
+    "primaryMuscle": "shoulder_back",
+    "secondaryMuscles": ["trapezius"],
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 18,
+    "name": "Rear Delt Fly",
+    "primaryMuscle": "shoulder_back",
+    "secondaryMuscles": [],
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 19,
+    "name": "Cable Rear Delt Fly",
+    "primaryMuscle": "shoulder_back",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+
+  {
+    "id": 20,
+    "name": "Barbell Curl",
+    "primaryMuscle": "biceps",
+    "secondaryMuscles": ["forearm"],
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 21,
+    "name": "EZ Bar Curl",
+    "primaryMuscle": "biceps",
+    "secondaryMuscles": ["forearm"],
+    "equipment": "ez_bar",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 22,
+    "name": "Dumbbell Curl",
+    "primaryMuscle": "biceps",
+    "secondaryMuscles": ["forearm"],
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 23,
+    "name": "Hammer Curl",
+    "primaryMuscle": "biceps",
+    "secondaryMuscles": ["forearm"],
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 24,
+    "name": "Preacher Curl",
+    "primaryMuscle": "biceps",
+    "secondaryMuscles": ["forearm"],
+    "equipment": "ez_bar",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 25,
+    "name": "Concentration Curl",
+    "primaryMuscle": "biceps",
+    "secondaryMuscles": [],
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 26,
+    "name": "Cable Curl",
+    "primaryMuscle": "biceps",
+    "secondaryMuscles": ["forearm"],
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+
+  {
+    "id": 27,
+    "name": "Cable Triceps Pushdown",
+    "primaryMuscle": "triceps",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 28,
+    "name": "Overhead Cable Extension",
+    "primaryMuscle": "triceps",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 29,
+    "name": "Skull Crusher",
+    "primaryMuscle": "triceps",
+    "secondaryMuscles": [],
+    "equipment": "ez_bar",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 30,
+    "name": "Close-Grip Bench Press",
+    "primaryMuscle": "triceps",
+    "secondaryMuscles": ["chest", "shoulder_front"],
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 31,
+    "name": "Dumbbell Overhead Extension",
+    "primaryMuscle": "triceps",
+    "secondaryMuscles": [],
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 32,
+    "name": "Bench Dips",
+    "primaryMuscle": "triceps",
+    "secondaryMuscles": ["shoulder_front"],
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+
+  {
+    "id": 33,
+    "name": "Wrist Curl",
+    "primaryMuscle": "forearm",
+    "secondaryMuscles": [],
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 34,
+    "name": "Reverse Wrist Curl",
+    "primaryMuscle": "forearm",
+    "secondaryMuscles": [],
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 35,
+    "name": "Farmer's Walk",
+    "primaryMuscle": "forearm",
+    "secondaryMuscles": ["trapezius"],
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 36,
+    "name": "Pull-Up",
+    "primaryMuscle": "latissimus_dorsi",
+    "secondaryMuscles": ["biceps", "shoulder_back"],
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 37,
+    "name": "Chin-Up",
+    "primaryMuscle": "latissimus_dorsi",
+    "secondaryMuscles": ["biceps"],
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 38,
+    "name": "Wide Grip Lat Pulldown",
+    "primaryMuscle": "latissimus_dorsi",
+    "secondaryMuscles": ["biceps"],
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 39,
+    "name": "Close Grip Lat Pulldown",
+    "primaryMuscle": "latissimus_dorsi",
+    "secondaryMuscles": ["biceps"],
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 40,
+    "name": "Single Arm Lat Pulldown",
+    "primaryMuscle": "latissimus_dorsi",
+    "secondaryMuscles": ["biceps"],
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 41,
+    "name": "Straight Arm Pulldown",
+    "primaryMuscle": "latissimus_dorsi",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 42,
+    "name": "Seated Cable Row",
+    "primaryMuscle": "latissimus_dorsi",
+    "secondaryMuscles": ["biceps", "trapezius"],
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 43,
+    "name": "Chest Supported Row",
+    "primaryMuscle": "latissimus_dorsi",
+    "secondaryMuscles": ["biceps"],
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 44,
+    "name": "Single Arm Dumbbell Row",
+    "primaryMuscle": "latissimus_dorsi",
+    "secondaryMuscles": ["biceps"],
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 45,
+    "name": "T-Bar Row",
+    "primaryMuscle": "latissimus_dorsi",
+    "secondaryMuscles": ["biceps", "trapezius"],
+    "equipment": "machine",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 46,
+    "name": "Bent Over Barbell Row",
+    "primaryMuscle": "latissimus_dorsi",
+    "secondaryMuscles": ["biceps", "trapezius"],
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 47,
+    "name": "Pendlay Row",
+    "primaryMuscle": "latissimus_dorsi",
+    "secondaryMuscles": ["trapezius", "back_lumbar"],
+    "equipment": "barbell",
+    "difficulty": "advanced",
+    "description": "",
+    "video": ""
+  },
+
+  {
+    "id": 48,
+    "name": "Barbell Shrug",
+    "primaryMuscle": "trapezius",
+    "secondaryMuscles": [],
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 49,
+    "name": "Dumbbell Shrug",
+    "primaryMuscle": "trapezius",
+    "secondaryMuscles": [],
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 50,
+    "name": "Smith Machine Shrug",
+    "primaryMuscle": "trapezius",
+    "secondaryMuscles": [],
+    "equipment": "smith_machine",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 51,
+    "name": "Behind The Back Shrug",
+    "primaryMuscle": "trapezius",
+    "secondaryMuscles": [],
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 52,
+    "name": "Cable Shrug",
+    "primaryMuscle": "trapezius",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 53,
+    "name": "Upright Row",
+    "primaryMuscle": "trapezius",
+    "secondaryMuscles": ["shoulder_front"],
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 54,
+    "name": "High Pull",
+    "primaryMuscle": "trapezius",
+    "secondaryMuscles": ["shoulder_front"],
+    "equipment": "barbell",
+    "difficulty": "advanced",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 55,
+    "name": "Face Pull",
+    "primaryMuscle": "trapezius",
+    "secondaryMuscles": ["shoulder_back"],
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+
+  {
+    "id": 56,
+    "name": "Conventional Deadlift",
+    "primaryMuscle": "back_lumbar",
+    "secondaryMuscles": ["gluteal", "biceps_femoris", "trapezius"],
+    "equipment": "barbell",
+    "difficulty": "advanced",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 57,
+    "name": "Romanian Deadlift",
+    "primaryMuscle": "back_lumbar",
+    "secondaryMuscles": ["biceps_femoris", "gluteal"],
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 58,
+    "name": "Stiff Leg Deadlift",
+    "primaryMuscle": "back_lumbar",
+    "secondaryMuscles": ["biceps_femoris"],
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 59,
+    "name": "Rack Pull",
+    "primaryMuscle": "back_lumbar",
+    "secondaryMuscles": ["trapezius", "gluteal"],
+    "equipment": "barbell",
+    "difficulty": "advanced",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 60,
+    "name": "Good Morning",
+    "primaryMuscle": "back_lumbar",
+    "secondaryMuscles": ["biceps_femoris", "gluteal"],
+    "equipment": "barbell",
+    "difficulty": "advanced",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 61,
+    "name": "Back Extension",
+    "primaryMuscle": "back_lumbar",
+    "secondaryMuscles": ["gluteal", "biceps_femoris"],
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 62,
+    "name": "Reverse Hyperextension",
+    "primaryMuscle": "back_lumbar",
+    "secondaryMuscles": ["gluteal"],
+    "equipment": "machine",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 63,
+    "name": "Bird Dog",
+    "primaryMuscle": "back_lumbar",
+    "secondaryMuscles": ["abs_middle", "gluteal"],
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 64,
+    "name": "Superman Hold",
+    "primaryMuscle": "back_lumbar",
+    "secondaryMuscles": ["gluteal"],
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 65,
+    "name": "Seal Row",
+    "primaryMuscle": "latissimus_dorsi",
+    "secondaryMuscles": ["biceps", "trapezius"],
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 66,
+    "name": "Back Squat",
+    "primaryMuscle": "quadriceps",
+    "secondaryMuscles": ["gluteal", "adductor_legs"],
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 67,
+    "name": "Front Squat",
+    "primaryMuscle": "quadriceps",
+    "secondaryMuscles": ["gluteal"],
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 68,
+    "name": "Hack Squat",
+    "primaryMuscle": "quadriceps",
+    "secondaryMuscles": ["gluteal"],
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 69,
+    "name": "Leg Press",
+    "primaryMuscle": "quadriceps",
+    "secondaryMuscles": ["gluteal"],
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 70,
+    "name": "Bulgarian Split Squat",
+    "primaryMuscle": "quadriceps",
+    "secondaryMuscles": ["gluteal", "biceps_femoris"],
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 71,
+    "name": "Walking Lunge",
+    "primaryMuscle": "quadriceps",
+    "secondaryMuscles": ["gluteal", "biceps_femoris"],
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 72,
+    "name": "Reverse Lunge",
+    "primaryMuscle": "quadriceps",
+    "secondaryMuscles": ["gluteal"],
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 73,
+    "name": "Step Up",
+    "primaryMuscle": "quadriceps",
+    "secondaryMuscles": ["gluteal"],
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 74,
+    "name": "Leg Extension",
+    "primaryMuscle": "quadriceps",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 75,
+    "name": "Goblet Squat",
+    "primaryMuscle": "quadriceps",
+    "secondaryMuscles": ["gluteal"],
+    "equipment": "dumbbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 76,
+    "name": "Sissy Squat",
+    "primaryMuscle": "quadriceps_inside",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "difficulty": "advanced",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 77,
+    "name": "Narrow Stance Leg Press",
+    "primaryMuscle": "quadriceps_inside",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 78,
+    "name": "Romanian Deadlift",
+    "primaryMuscle": "biceps_femoris",
+    "secondaryMuscles": ["gluteal", "back_lumbar"],
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 79,
+    "name": "Lying Leg Curl",
+    "primaryMuscle": "biceps_femoris",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 80,
+    "name": "Seated Leg Curl",
+    "primaryMuscle": "biceps_femoris",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 81,
+    "name": "Nordic Curl",
+    "primaryMuscle": "biceps_femoris",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "difficulty": "advanced",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 82,
+    "name": "Single Leg Romanian Deadlift",
+    "primaryMuscle": "biceps_femoris",
+    "secondaryMuscles": ["gluteal"],
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+
+  {
+    "id": 83,
+    "name": "Hip Thrust",
+    "primaryMuscle": "gluteal",
+    "secondaryMuscles": ["biceps_femoris"],
+    "equipment": "barbell",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 84,
+    "name": "Glute Bridge",
+    "primaryMuscle": "gluteal",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 85,
+    "name": "Cable Kickback",
+    "primaryMuscle": "gluteal",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 86,
+    "name": "Smith Machine Hip Thrust",
+    "primaryMuscle": "gluteal",
+    "secondaryMuscles": ["biceps_femoris"],
+    "equipment": "smith_machine",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 87,
+    "name": "Cable Pull Through",
+    "primaryMuscle": "gluteal",
+    "secondaryMuscles": ["biceps_femoris"],
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+
+  {
+    "id": 88,
+    "name": "Adductor Machine",
+    "primaryMuscle": "adductor_legs",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 89,
+    "name": "Copenhagen Plank",
+    "primaryMuscle": "adductor_legs",
+    "secondaryMuscles": ["abs_lateral"],
+    "equipment": "bodyweight",
+    "difficulty": "advanced",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 90,
+    "name": "Wide Stance Squat",
+    "primaryMuscle": "adductor_legs",
+    "secondaryMuscles": ["quadriceps", "gluteal"],
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+
+  {
+    "id": 91,
+    "name": "Standing Calf Raise",
+    "primaryMuscle": "gastrocnemius",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 92,
+    "name": "Seated Calf Raise",
+    "primaryMuscle": "gastrocnemius",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 93,
+    "name": "Donkey Calf Raise",
+    "primaryMuscle": "gastrocnemius",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 94,
+    "name": "Single Leg Calf Raise",
+    "primaryMuscle": "gastrocnemius",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 95,
+    "name": "Calf Press on Leg Press",
+    "primaryMuscle": "gastrocnemius",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+
+  {
+    "id": 96,
+    "name": "Crunch",
+    "primaryMuscle": "abs_middle",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 97,
+    "name": "Cable Crunch",
+    "primaryMuscle": "abs_middle",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 98,
+    "name": "Machine Crunch",
+    "primaryMuscle": "abs_middle",
+    "secondaryMuscles": [],
+    "equipment": "machine",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 99,
+    "name": "Swiss Ball Crunch",
+    "primaryMuscle": "abs_middle",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+
+  {
+    "id": 100,
+    "name": "Ab Wheel Rollout",
+    "primaryMuscle": "abs_middle",
+    "secondaryMuscles": ["shoulder_front"],
+    "equipment": "bodyweight",
+    "difficulty": "advanced",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 101,
+    "name": "Plank",
+    "primaryMuscle": "abs_middle",
+    "secondaryMuscles": ["back_lumbar"],
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 102,
+    "name": "Weighted Plank",
+    "primaryMuscle": "abs_middle",
+    "secondaryMuscles": ["back_lumbar"],
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 103,
+    "name": "Dead Bug",
+    "primaryMuscle": "abs_middle",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+
+  {
+    "id": 104,
+    "name": "Hanging Leg Raise",
+    "primaryMuscle": "abs_middle",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 105,
+    "name": "Reverse Crunch",
+    "primaryMuscle": "abs_middle",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 106,
+    "name": "Lying Leg Raise",
+    "primaryMuscle": "abs_middle",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 107,
+    "name": "Captain's Chair Leg Raise",
+    "primaryMuscle": "abs_middle",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+
+  {
+    "id": 108,
+    "name": "Russian Twist",
+    "primaryMuscle": "abs_lateral",
+    "secondaryMuscles": [],
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 109,
+    "name": "Cable Wood Chop",
+    "primaryMuscle": "abs_lateral",
+    "secondaryMuscles": [],
+    "equipment": "cable",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 110,
+    "name": "Side Plank",
+    "primaryMuscle": "abs_lateral",
+    "secondaryMuscles": ["abs_middle"],
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 111,
+    "name": "Landmine Twist",
+    "primaryMuscle": "abs_lateral",
+    "secondaryMuscles": ["shoulder_front"],
+    "equipment": "barbell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+
+  {
+    "id": 112,
+    "name": "Push-Up",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": ["triceps", "shoulder_front"],
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 113,
+    "name": "Diamond Push-Up",
+    "primaryMuscle": "triceps",
+    "secondaryMuscles": ["chest", "shoulder_front"],
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 114,
+    "name": "Incline Push-Up",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": ["triceps"],
+    "equipment": "bodyweight",
+    "difficulty": "beginner",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 115,
+    "name": "Decline Push-Up",
+    "primaryMuscle": "chest",
+    "secondaryMuscles": ["shoulder_front"],
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+
+  {
+    "id": 116,
+    "name": "Burpee",
+    "primaryMuscle": "quadriceps",
+    "secondaryMuscles": ["chest", "shoulder_front", "abs_middle"],
+    "equipment": "bodyweight",
+    "difficulty": "advanced",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 117,
+    "name": "Thruster",
+    "primaryMuscle": "quadriceps",
+    "secondaryMuscles": ["shoulder_front", "triceps"],
+    "equipment": "barbell",
+    "difficulty": "advanced",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 118,
+    "name": "Kettlebell Swing",
+    "primaryMuscle": "gluteal",
+    "secondaryMuscles": ["biceps_femoris", "back_lumbar"],
+    "equipment": "kettlebell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 119,
+    "name": "Bear Crawl",
+    "primaryMuscle": "abs_middle",
+    "secondaryMuscles": ["shoulder_front", "quadriceps"],
+    "equipment": "bodyweight",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 120,
+    "name": "Battle Rope Waves",
+    "primaryMuscle": "shoulder_front",
+    "secondaryMuscles": ["trapezius", "abs_middle"],
+    "equipment": "battle_rope",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 121,
+    "name": "Wall Ball",
+    "primaryMuscle": "quadriceps",
+    "secondaryMuscles": ["shoulder_front", "gluteal"],
+    "equipment": "medicine_ball",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 122,
+    "name": "Box Jump",
+    "primaryMuscle": "quadriceps",
+    "secondaryMuscles": ["gluteal", "gastrocnemius"],
+    "equipment": "plyo_box",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 123,
+    "name": "Sled Push",
+    "primaryMuscle": "quadriceps",
+    "secondaryMuscles": ["gluteal", "gastrocnemius"],
+    "equipment": "sled",
+    "difficulty": "advanced",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 124,
+    "name": "Farmer Carry",
+    "primaryMuscle": "forearm",
+    "secondaryMuscles": ["trapezius", "abs_middle"],
+    "equipment": "dumbbell",
+    "difficulty": "intermediate",
+    "description": "",
+    "video": ""
+  },
+  {
+    "id": 125,
+    "name": "Turkish Get-Up",
+    "primaryMuscle": "shoulder_front",
+    "secondaryMuscles": ["abs_middle", "gluteal"],
+    "equipment": "kettlebell",
+    "difficulty": "advanced",
+    "description": "",
+    "video": ""
+  }
+]

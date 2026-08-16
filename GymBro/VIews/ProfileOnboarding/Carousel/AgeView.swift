@@ -6,7 +6,7 @@ import AudioToolbox
 
 struct AgeView: View {
     
-    @StateObject var viewModel: OnboardingViewModel
+    @ObservedObject var viewModel: OnboardingViewModel
     var next: () -> Void
     
     var body: some View {

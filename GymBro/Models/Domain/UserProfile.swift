@@ -14,4 +14,5 @@ struct UserProfile: Codable {
     var weight: Double
     var height: Int
     var gender: Gender
+    var photoPath: String?
 }

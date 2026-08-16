@@ -10,6 +10,7 @@ enum SettingsDestination: Hashable {
     case goals
     case weightUnit
     case workoutHistory
+    case appleHealth
     case support
     case logout
 }

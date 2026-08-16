@@ -7,13 +7,14 @@
 import Foundation
 import CoreData
 
+
 final class CoreDataUserProfileRepository: UserProfileRepository {
     
     static let shared = CoreDataUserProfileRepository()
     private let context: NSManagedObjectContext
-    
+        
     private init(context: NSManagedObjectContext = PersistenceController.shared.context) {
-        self.context = context
+            self.context = context
     }
     
     func fetchUserProfile() async throws -> UserProfile {
@@ -48,6 +49,7 @@ final class CoreDataUserProfileRepository: UserProfileRepository {
         entity.weight = Double(userProfile.weight)
         entity.height = Int16(userProfile.height)
         entity.gender = userProfile.gender.displayName
+        // photoPath is not in the CoreData model — persisted via UserDefaults in OnboardingViewModel
         
         try context.save()
     }

@@ -12,6 +12,6 @@ struct MyAccountView: View {
     }
 }
 
-#Preview {
-    MyAccountView()
-}
+//#Preview {
+//    MyAccountView()
+//}

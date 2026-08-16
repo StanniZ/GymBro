@@ -7,10 +7,10 @@
 import SwiftUI
 
 struct LoginView: View {
-    @EnvironmentObject var appState: AppState
     @State private var emailText: String = ""
     @State private var passwordText: String = ""
     @State private var secureTextEntry: Bool = true
+    var onFinish:() -> Void
     
     
     var body: some View {
@@ -204,7 +204,7 @@ struct LoginView: View {
     
     private var skip: some View {
         Button(action: {
-            appState.currentScreen = .main
+            onFinish()
         }) {
             HStack(spacing: 4){
                 Spacer()
@@ -218,7 +218,3 @@ struct LoginView: View {
         }
     }
 }
-
-//#Preview {
-//    LoginView()
-//}

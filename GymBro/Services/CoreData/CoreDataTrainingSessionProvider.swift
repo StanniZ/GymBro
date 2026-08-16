@@ -7,27 +7,25 @@
 
 import CoreData
 import Foundation
+    
 
-final class CoreDataTrainingSessionProvider: BuildSessionProviderProtocol {
-    // Контекст Core Data, через который выполняются операции
+@MainActor
+final class CoreDataTrainingSessionProvider: CoreDataTrainingSessionProtocol {
+
     private let context: NSManagedObjectContext
     
-    // Инициализатор. По умолчанию использует контекст из синглтона PersistenceController
-    init(context: NSManagedObjectContext = PersistenceController.shared.context) {
+    init(context: NSManagedObjectContext) {
         self.context = context
     }
     
-    func fetchSessions() -> [TrainingSessionModel] {
+    func fetchUnfinishedSessions() throws -> [TrainingSessionModel] {
         let request: NSFetchRequest<TrainingSessionEntity> = TrainingSessionEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "isFinished == false")
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \TrainingSessionEntity.dayOfWeek, ascending: true)]
+        request.predicate = NSPredicate(format: "isFinished == N0")
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \TrainingSessionEntity.id, ascending: true)]
         
-        do {
-            let entities = try context.fetch(request)
-            return entities.map {$0.toModel()}
-        } catch {
-            print("Failed return sessions: \(error)")
-            return []
+        let entities = try context.fetch(request)
+        return entities.map {
+            TrainingSessionMapper.toModel($0)
         }
     }
     

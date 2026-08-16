@@ -13,6 +13,7 @@ struct MainView: View {
     @EnvironmentObject var buildSessionVM: BuiltInTemplatesViewModel
     @EnvironmentObject var todaySessionVM: TodaySessionViewModel
     @EnvironmentObject var calendarVM: CalendarViewModel
+    @EnvironmentObject var profileVM: OnboardingViewModel
 
     var body: some View {
         NavigationStack {
@@ -26,6 +27,10 @@ struct MainView: View {
                 .padding(.horizontal, 16)
             }
             .background(Color.backmain)
+        }
+        .task {
+            try? await profileVM.fetchUserProfile()
+            profileVM.loadAvatar()
         }
     }
 }

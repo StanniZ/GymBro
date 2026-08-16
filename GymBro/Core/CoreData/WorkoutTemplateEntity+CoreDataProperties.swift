@@ -24,7 +24,6 @@ extension WorkoutTemplateEntity {
     @NSManaged public var durationMinutes: Int16
     @NSManaged public var id: UUID?
     @NSManaged public var name: String?
-    @NSManaged public var sourceTemplateID: UUID?
     @NSManaged public var exercises: NSSet?
 
 }

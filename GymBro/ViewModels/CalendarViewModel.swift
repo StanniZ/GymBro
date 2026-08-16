@@ -24,7 +24,7 @@ final class CalendarViewModel: ObservableObject {
         do {
             let sessions = try await provider.getAllFinishedSessions()
             completedSessions = Set(sessions.compactMap { session in
-                guard let date = session.timestamp as Date? else { return nil }
+                guard let date = session.finishedAt as Date? else { return nil }
                 return calendar.startOfDay(for: date)
                 
             })
