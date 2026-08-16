@@ -10,16 +10,19 @@ import PhotosUI
 struct AccountView: View {
     @EnvironmentObject var profileVM: OnboardingViewModel
     @State private var pickerItem: PhotosPickerItem?
+    @State private var saveSuccess = false
 
     var body: some View {
         ZStack {
             Color.backmain.ignoresSafeArea()
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 24) {
+                VStack(spacing: 16) {
                     avatarSection
-                    fieldsCard
+                    infoCard
+                    physicalCard
                 }
                 .padding(16)
+                .padding(.bottom, 32)
             }
         }
         .navigationTitle("My Account")
@@ -28,10 +31,15 @@ struct AccountView: View {
         .toolbarColorScheme(.dark, for: .navigationBar)
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
-                Button("Save") {
-                    Task { try? await profileVM.saveUserProfile() }
+                Button(saveSuccess ? "Saved ✓" : "Save") {
+                    Task {
+                        try? await profileVM.saveUserProfile()
+                        saveSuccess = true
+                        try? await Task.sleep(for: .seconds(2))
+                        saveSuccess = false
+                    }
                 }
-                .foregroundColor(.currentday)
+                .foregroundColor(saveSuccess ? .currentday : .white)
                 .font(AppFont.subheadline)
             }
         }
@@ -49,28 +57,23 @@ struct AccountView: View {
                     Group {
                         if let img = profileVM.userAvatar {
                             Image(uiImage: img)
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 90, height: 90)
+                                .resizable().scaledToFill()
+                                .frame(width: 96, height: 96)
                                 .clipShape(Circle())
                         } else {
                             ZStack {
-                                Circle()
-                                    .fill(Color.currentday.opacity(0.15))
-                                    .frame(width: 90, height: 90)
+                                Circle().fill(Color.currentday.opacity(0.15))
+                                    .frame(width: 96, height: 96)
                                 Text(initials)
-                                    .font(.system(size: 32, weight: .bold))
+                                    .font(.system(size: 34, weight: .bold))
                                     .foregroundColor(.currentday)
                             }
                         }
                     }
                     ZStack {
-                        Circle()
-                            .fill(Color.currentday)
-                            .frame(width: 26, height: 26)
+                        Circle().fill(Color.currentday).frame(width: 28, height: 28)
                         Image(systemName: "camera.fill")
-                            .font(.system(size: 12))
-                            .foregroundColor(.white)
+                            .font(.system(size: 13)).foregroundColor(.white)
                     }
                     .offset(x: 2, y: 2)
                 }
@@ -79,7 +82,8 @@ struct AccountView: View {
                 .font(AppFont.caption)
                 .foregroundColor(.weekDay)
         }
-        .padding(.top, 8)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 8)
     }
 
     private var initials: String {
@@ -90,93 +94,114 @@ struct AccountView: View {
         return String(profileVM.userProfile.name.prefix(2)).uppercased()
     }
 
-    // MARK: - Fields
+    // MARK: - Info Card (Name / Email / Gender)
 
-    private var fieldsCard: some View {
+    private var infoCard: some View {
         VStack(spacing: 0) {
-            fieldRow("Name") {
-                TextField("Your name", text: $profileVM.userProfile.name)
-                    .multilineTextAlignment(.trailing)
-                    .foregroundColor(.currentday)
-                    .font(AppFont.subheadline)
-            }
-            divider
-            fieldRow("Email") {
-                TextField("Email", text: $profileVM.userProfile.email)
-                    .multilineTextAlignment(.trailing)
-                    .foregroundColor(.currentday)
-                    .font(AppFont.subheadline)
-                    .keyboardType(.emailAddress)
-                    .autocapitalization(.none)
-            }
-            divider
-            fieldRow("Age") {
-                HStack(spacing: 10) {
-                    Text("\(profileVM.userProfile.age) y.o.")
-                        .foregroundColor(.currentday)
-                        .font(AppFont.subheadline)
-                    Stepper("", value: $profileVM.userProfile.age, in: 10...100)
-                        .labelsHidden()
-                }
-            }
-            divider
-            fieldRow("Height") {
-                HStack(spacing: 10) {
-                    Text("\(profileVM.userProfile.height) cm")
-                        .foregroundColor(.currentday)
-                        .font(AppFont.subheadline)
-                    Stepper("", value: $profileVM.userProfile.height, in: 100...250)
-                        .labelsHidden()
-                }
-            }
-            divider
-            fieldRow("Weight") {
-                HStack(spacing: 10) {
-                    Text(String(format: "%.1f kg", profileVM.userProfile.weight))
-                        .foregroundColor(.currentday)
-                        .font(AppFont.subheadline)
-                    Stepper("", value: $profileVM.userProfile.weight, in: 30...250, step: 0.5)
-                        .labelsHidden()
-                }
-            }
-            divider
-            fieldRow("Gender") {
-                Menu {
-                    ForEach(Gender.allCases, id: \.self) { gender in
-                        Button(gender.displayName) {
-                            profileVM.userProfile.gender = gender
-                        }
-                    }
-                } label: {
-                    HStack(spacing: 4) {
-                        Text(profileVM.userProfile.gender.displayName)
-                            .foregroundColor(.currentday)
-                        Image(systemName: "chevron.up.chevron.down")
-                            .font(.system(size: 11))
-                            .foregroundColor(.weekDay)
-                    }
-                    .font(AppFont.subheadline)
-                }
-            }
+            cardHeader(title: "Personal Info", icon: "person.fill", color: .currentday)
+            Divider().background(Color.white.opacity(0.06))
+
+            textRow("Name", placeholder: "Your name", text: $profileVM.userProfile.name)
+            Divider().background(Color.white.opacity(0.06)).padding(.leading, 16)
+
+            textRow("Email", placeholder: "email@example.com", text: $profileVM.userProfile.email,
+                    keyboardType: .emailAddress)
+            Divider().background(Color.white.opacity(0.06)).padding(.leading, 16)
+
+            genderRow
         }
-        .padding(.horizontal, 16)
         .background(Color.backbutton)
-        .cornerRadius(16)
+        .cornerRadius(20)
     }
 
-    private func fieldRow<Content: View>(_ title: String, @ViewBuilder content: () -> Content) -> some View {
-        HStack {
-            Text(title)
-                .font(AppFont.subheadline)
-                .foregroundColor(.white)
-            Spacer()
-            content()
+    // MARK: - Physical Card (Age / Height / Weight)
+
+    private var physicalCard: some View {
+        VStack(spacing: 0) {
+            cardHeader(title: "Physical Parameters", icon: "figure.stand", color: .orange)
+            Divider().background(Color.white.opacity(0.06))
+
+            VStack(spacing: 0) {
+                IntFieldRow(label: "Age", unit: "y.o.",
+                            value: $profileVM.userProfile.age, range: 10...100)
+                Divider().background(Color.white.opacity(0.06))
+
+                IntFieldRow(label: "Height", unit: "cm",
+                            value: $profileVM.userProfile.height, range: 100...250)
+                Divider().background(Color.white.opacity(0.06))
+
+                DoubleFieldRow(label: "Weight", unit: "kg",
+                               value: $profileVM.userProfile.weight,
+                               range: 30...250, step: 0.5, fractionDigits: 1)
+            }
+            .padding(.horizontal, 16)
         }
+        .background(Color.backbutton)
+        .cornerRadius(20)
+    }
+
+    // MARK: - Row Builders
+
+    private func cardHeader(title: String, icon: String, color: Color) -> some View {
+        HStack(spacing: 10) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(color.opacity(0.15))
+                    .frame(width: 32, height: 32)
+                Image(systemName: icon)
+                    .font(.system(size: 14))
+                    .foregroundColor(color)
+            }
+            Text(title)
+                .font(AppFont.body)
+                .foregroundColor(.white)
+        }
+        .padding(.horizontal, 16)
         .padding(.vertical, 14)
     }
 
-    private var divider: some View {
-        HorizontalDottedLineFull()
-            .padding(.leading, 0)
+    private func textRow(_ label: String, placeholder: String,
+                         text: Binding<String>,
+                         keyboardType: UIKeyboardType = .default) -> some View {
+        HStack {
+            Text(label)
+                .font(AppFont.subheadline)
+                .foregroundColor(.white)
+            Spacer()
+            TextField(placeholder, text: text)
+                .multilineTextAlignment(.trailing)
+                .foregroundColor(.currentday)
+                .font(AppFont.subheadline)
+                .keyboardType(keyboardType)
+                .autocapitalization(keyboardType == .emailAddress ? .none : .words)
+                .frame(maxWidth: 180)
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+    }
+
+    private var genderRow: some View {
+        HStack {
+            Text("Gender")
+                .font(AppFont.subheadline)
+                .foregroundColor(.white)
+            Spacer()
+            Menu {
+                ForEach(Gender.allCases, id: \.self) { g in
+                    Button(g.displayName) { profileVM.userProfile.gender = g }
+                }
+            } label: {
+                HStack(spacing: 4) {
+                    Text(profileVM.userProfile.gender.displayName)
+                        .foregroundColor(.currentday)
+                    Image(systemName: "chevron.up.chevron.down")
+                        .font(.system(size: 11))
+                        .foregroundColor(.weekDay)
+                }
+                .font(AppFont.subheadline)
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
     }
 }

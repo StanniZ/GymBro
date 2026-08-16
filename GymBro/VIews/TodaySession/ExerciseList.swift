@@ -8,140 +8,177 @@ import SwiftUI
 
 struct ExerciseList: View {
     @Binding var exercise: SessionExerciseModel
-    @State private var setId: UUID? = nil
-    @State private var reps: Int = 8
-    @State private var weight: Double = 20
-    
+
     var body: some View {
-        VStack(spacing: 16){
+        VStack(spacing: 0) {
             exerciseHeader
-            table
-            addSetButton
+            Divider().background(Color.white.opacity(0.06))
+            setsTable
+            addSetRow
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.backmain)
-        
+        .background(Color.backbutton)
+        .cornerRadius(16)
     }
-    
+
     private var exerciseName: String {
         ExerciseLoader.byID[exercise.exerciseID]?.name ?? "Exercise \(exercise.exerciseID)"
     }
 
+    // MARK: - Header
+
     private var exerciseHeader: some View {
         HStack(spacing: 8) {
             Text(exerciseName)
-                .font(.system(size: 18, weight: .medium))
-                .foregroundStyle(.white)
-            Button(action: {
-                
-            }) {
-                Image(systemName: "info.circle")
-                    .font(.system(size: 14))
-                    .foregroundStyle(.white.opacity(0.5))
-            }
+                .font(AppFont.body)
+                .foregroundColor(.white)
+                .lineLimit(1)
             Spacer()
-            Button(action: {
-                
-            }) {
-                Image(systemName: "ellipsis")
-                    .font(.system(size: 18))
-                    .foregroundStyle(.white.opacity(0.5))
-            }
+            Text("\(exercise.sets.count) sets")
+                .font(AppFont.caption)
+                .foregroundColor(.white.opacity(0.4))
         }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
     }
-    
-    private var table: some View {
-        Grid(horizontalSpacing: 12, verticalSpacing: 12) {
-            GridRow {
-                Text("Set")
-                Text("Previous")
+
+    // MARK: - Sets Table
+
+    private var setsTable: some View {
+        VStack(spacing: 0) {
+            // Column headers
+            HStack {
+                Text("#")
+                    .frame(width: 28, alignment: .center)
                 Text("Weight")
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 Text("Reps")
+                    .frame(width: 80, alignment: .center)
+                Spacer().frame(width: 28)
             }
-            .font(.system(size: 14, weight: .bold))
-            .foregroundStyle(.white.opacity(0.5))
-            .gridColumnAlignment(.leading)
+            .font(.system(size: 11, weight: .semibold))
+            .foregroundColor(.white.opacity(0.3))
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
+
+            Divider().background(Color.white.opacity(0.04))
 
             ForEach(Array($exercise.sets.enumerated()), id: \.1.id) { index, $set in
-                GridRow {
-                    Text("\(index + 1)")
-                        .foregroundStyle(.white.opacity(0.7))
-                        .frame(height: 40)
-                        .frame(minWidth: 40)
-                        .background(RoundedRectangle(cornerRadius: 6).fill(Color.backbutton))
-
-                    Text("22kg × 12")
-                        .foregroundStyle(.white.opacity(0.7))
-                        .padding(.horizontal, 16)
-                        .frame(minHeight: 40)
-                        .background(RoundedRectangle(cornerRadius: 6).fill(Color.currentday).opacity(0.05))
-
-                    TextField("Weight", value: $set.weightKg, format: .number.precision(.fractionLength(0...1)).locale(Locale(identifier: "en_US")))
-                        .foregroundStyle(.white)
-                        .textFieldStyle(.plain)
-                        .padding(.horizontal, 16)
-                        .keyboardType(.decimalPad)
-                        .multilineTextAlignment(.leading)
-                        .frame(minHeight: 40)
-                        .frame(maxWidth: 80)
-                        .background(RoundedRectangle(cornerRadius: 6).stroke(Color.white.opacity(0.5), lineWidth: 0.5))
-                    
-                    TextField("Reps", value: $set.reps, format: .number)
-                        .foregroundStyle(.white)
-                        .textFieldStyle(.plain)
-                        .padding(.horizontal, 16)
-                        .multilineTextAlignment(.leading)
-                        .frame(minHeight: 40)
-                        .frame(maxWidth: 70)
-                        .background(RoundedRectangle(cornerRadius: 6).stroke(Color.white.opacity(0.5), lineWidth: 0.5))
-                    Spacer()
-                    removeSetButton($set)
-                        .frame(minHeight: 40)
-                    
+                SetRow(index: index + 1, set: $set, onRemove: {
+                    removeSet(id: set.id)
+                })
+                if index < exercise.sets.count - 1 {
+                    Divider().background(Color.white.opacity(0.04)).padding(.horizontal, 14)
                 }
-                .font(.system(size: 14, weight: .medium))
-            }
-        }
-        .gridColumnAlignment(.leading)
-        .padding(1)
-    }
-    
-    private func removeSetButton(_ set: Binding<ExerciseSetModel>) -> some View {
-        Button(action: {
-            removeSet(at: set)
-        }) {
-            Image(systemName: "xmark")
-                .font(.system(size: 16))
-                .foregroundStyle(.white.opacity(0.3))
-        }
-    }
-    
-    private var addSetButton: some View {
-        Button(action: {
-            addSet()
-        }) {
-            Text("ADD SET")
-                .font(.system(size: 16, weight: .medium))
-                
-        }
-        .frame(maxWidth: .infinity)
-        .frame(height: 40)
-        .foregroundColor(.currentday)
-        .background(Color.backbutton)
-        .cornerRadius(8)
-    }
-    
-    private func removeSet(at set: Binding<ExerciseSetModel>) {
-        if exercise.sets.count > 1 {
-            if let index = exercise.sets.firstIndex(where: { $0.id == set.id.wrappedValue }) {
-                exercise.sets.remove(at: index)
             }
         }
     }
-    
+
+    // MARK: - Add Set Row
+
+    private var addSetRow: some View {
+        Button(action: addSet) {
+            HStack {
+                Image(systemName: "plus.circle.fill")
+                    .font(.system(size: 15))
+                    .foregroundColor(.currentday)
+                Text("Add Set")
+                    .font(AppFont.subheadline)
+                    .foregroundColor(.currentday)
+                Spacer()
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+        }
+    }
+
+    // MARK: - Actions
+
+    private func removeSet(id: UUID) {
+        guard exercise.sets.count > 1 else { return }
+        exercise.sets.removeAll { $0.id == id }
+    }
+
     private func addSet() {
-        if exercise.sets.count < 20 {
-            exercise.sets.append(ExerciseSetModel(reps: 0, weightKg: 0, isCompleted: false, timestamp: Date(), position: 1))
+        guard exercise.sets.count < 20 else { return }
+        exercise.sets.append(
+            ExerciseSetModel(reps: 0, weightKg: 0, isCompleted: false,
+                             timestamp: Date(), position: exercise.sets.count + 1)
+        )
+    }
+}
+
+// MARK: - Single Set Row
+
+private struct SetRow: View {
+    let index: Int
+    @Binding var set: ExerciseSetModel
+    let onRemove: () -> Void
+
+    @FocusState private var weightFocused: Bool
+    @FocusState private var repsFocused: Bool
+
+    var body: some View {
+        HStack(spacing: 8) {
+            // Set number
+            Text("\(index)")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundColor(.white.opacity(0.4))
+                .frame(width: 28, alignment: .center)
+
+            // Weight field
+            HStack(alignment: .lastTextBaseline, spacing: 3) {
+                TextField("0", value: $set.weightKg,
+                          format: .number.precision(.fractionLength(0...1)).locale(Locale(identifier: "en_US")))
+                    .keyboardType(.decimalPad)
+                    .foregroundColor(.white)
+                    .font(.system(size: 15, weight: .medium))
+                    .multilineTextAlignment(.trailing)
+                    .frame(width: 52)
+                    .focused($weightFocused)
+                Text("kg")
+                    .font(AppFont.caption)
+                    .foregroundColor(.white.opacity(0.35))
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(weightFocused ? Color.currentday.opacity(0.1) : Color.white.opacity(0.05))
+            )
+
+            // Reps field
+            HStack(alignment: .lastTextBaseline, spacing: 3) {
+                TextField("0", value: $set.reps, format: .number)
+                    .keyboardType(.numberPad)
+                    .foregroundColor(.white)
+                    .font(.system(size: 15, weight: .medium))
+                    .multilineTextAlignment(.trailing)
+                    .frame(width: 34)
+                    .focused($repsFocused)
+                Text("×")
+                    .font(AppFont.caption)
+                    .foregroundColor(.white.opacity(0.35))
+            }
+            .frame(width: 80)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            .background(
+                RoundedRectangle(cornerRadius: 8)
+                    .fill(repsFocused ? Color.currentday.opacity(0.1) : Color.white.opacity(0.05))
+            )
+
+            // Remove button
+            Button(action: onRemove) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 10, weight: .semibold))
+                    .foregroundColor(.white.opacity(0.25))
+                    .frame(width: 24, height: 24)
+                    .background(Color.white.opacity(0.05))
+                    .cornerRadius(6)
+            }
         }
+        .padding(.horizontal, 14)
+        .padding(.vertical, 8)
     }
 }
