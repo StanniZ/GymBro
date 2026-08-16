@@ -64,7 +64,7 @@ struct ExerciseList: View {
             // Column headers
             HStack {
                 Text("#").frame(width: 28, alignment: .center)
-                Text("Prev").frame(width: 68, alignment: .leading)
+                Text("Prev").frame(width: 88, alignment: .leading)
                 Text("Weight").frame(maxWidth: .infinity, alignment: .leading)
                 Text("Reps").frame(width: 74, alignment: .center)
                 Spacer().frame(width: 28)
@@ -140,8 +140,13 @@ private struct SetRow: View {
     private var prevLabel: String {
         guard let p = previous else { return "—" }
         if p.weightKg <= 0 && p.reps <= 0 { return "—" }
-        if p.weightKg <= 0 { return "\(p.reps) reps" }
-        return String(format: "%.0f×%d", p.weightKg, p.reps)
+        let kg  = p.weightKg > 0 ? String(format: "%.0fkg", p.weightKg) : ""
+        let rep = p.reps > 0     ? "\(p.reps)r"                          : ""
+        switch (kg.isEmpty, rep.isEmpty) {
+        case (false, false): return "\(kg) × \(rep)"
+        case (false, true):  return kg
+        default:             return rep
+        }
     }
 
     var body: some View {
@@ -156,7 +161,7 @@ private struct SetRow: View {
             Text(prevLabel)
                 .font(.system(size: 12, weight: .medium))
                 .foregroundColor(.white.opacity(previous != nil ? 0.3 : 0.15))
-                .frame(width: 68, alignment: .leading)
+                .frame(width: 88, alignment: .leading)
                 .lineLimit(1)
 
             // Weight field
