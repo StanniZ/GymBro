@@ -54,7 +54,7 @@ struct MainView: View {
             templateRepository: templateRepository,
             sessionProvider: provider
         ))
-        .environmentObject(TodaySessionViewModel(provider: provider, currentSessionProvider: sessionManager))
+        .environmentObject(TodaySessionViewModel(provider: provider, currentSessionProvider: sessionManager, templateRepository: templateRepository))
         .environmentObject(CalendarViewModel(provider: provider))
         .environmentObject(SessionTimerViewModel())
 }

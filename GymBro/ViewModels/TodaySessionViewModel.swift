@@ -16,11 +16,15 @@ final class TodaySessionViewModel: ObservableObject {
     @Published var draftSession: TrainingSessionModel
 
     private let provider: WorkoutSessionProviderProtocol
+    private let templateRepository: WorkoutTemplateRepositoryProtocol
     private let currentSessionProvider: CurrentSessionManager
     private var cancellable: AnyCancellable?
 
-    init(provider: WorkoutSessionProviderProtocol, currentSessionProvider: CurrentSessionManager) {
+    init(provider: WorkoutSessionProviderProtocol,
+         currentSessionProvider: CurrentSessionManager,
+         templateRepository: WorkoutTemplateRepositoryProtocol) {
         self.provider = provider
+        self.templateRepository = templateRepository
         self.currentSessionProvider = currentSessionProvider
         self.draftSession = currentSessionProvider.currentSession
 
@@ -36,13 +40,30 @@ final class TodaySessionViewModel: ObservableObject {
         draftSession.startedAt = Date()
     }
 
+    // Add exercises from picker during live workout
+    func addExercises(_ definitions: [ExerciseDefinition]) {
+        let newExercises = definitions.map { def in
+            SessionExerciseModel(
+                exerciseID: def.id,
+                position: draftSession.exercises.count,
+                sets: [ExerciseSetModel(reps: 0, weightKg: 0, position: 0)]
+            )
+        }
+        draftSession.exercises.append(contentsOf: newExercises)
+        currentSessionProvider.setCurrentSession(draftSession)
+    }
+
+    func removeExercise(id: UUID) {
+        draftSession.exercises.removeAll { $0.id == id }
+        currentSessionProvider.setCurrentSession(draftSession)
+    }
+
     func finishSession(elapsedSeconds: TimeInterval = 0) {
         guard state == .ready else { return }
         let endDate = Date()
         draftSession.finishedAt = endDate
         draftSession.isFinished = true
 
-        // Replace template calories with a real estimate from actual duration
         if elapsedSeconds > 0 {
             let storedWeight = UserDefaults.standard.double(forKey: "gymbro_user_weight_kg")
             let weightKg = storedWeight > 0 ? storedWeight : 70.0
@@ -57,13 +78,17 @@ final class TodaySessionViewModel: ObservableObject {
 
         Task {
             do {
-                // 1. CoreData — always the source of truth
+                // 1. CoreData history — always source of truth
                 try await provider.finishTodaysSession(snapshot)
+
+                // 2. Save / update user template so it appears in My list
+                let template = snapshot.asTemplate()
+                try? await templateRepository.saveTemplate(template)
 
                 withAnimation(.easeInOut(duration: 0.3)) { state = .saved }
                 currentSessionProvider.clearCurrentSession()
 
-                // 2. HealthKit — optional, fire-and-forget
+                // 3. HealthKit — optional, fire-and-forget
                 await WorkoutHealthService.shared.saveWorkoutIfEnabled(
                     name: snapshot.name,
                     startDate: snapshot.startedAt,

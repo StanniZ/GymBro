@@ -49,12 +49,6 @@ struct SettingsConfigurationBuilder {
 
             .init(header: "General", items: [
                 .navigation(.init(
-                    title: "Workout History",
-                    icon: "clock.arrow.circlepath",
-                    iconColor: .green,
-                    destination: .workoutHistory
-                )),
-                .navigation(.init(
                     title: "Help & Support",
                     icon: "questionmark.circle.fill",
                     iconColor: .teal,

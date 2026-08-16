@@ -45,7 +45,8 @@ struct GymBroApp: App {
         ))
         _todaySessionVM = StateObject(wrappedValue: TodaySessionViewModel(
             provider: todayProvider,
-            currentSessionProvider: currentSessionProvider
+            currentSessionProvider: currentSessionProvider,
+            templateRepository: templateRepository
         ))
         _calendarVM = StateObject(wrappedValue: CalendarViewModel(provider: todayProvider))
         _profileVM = StateObject(wrappedValue: OnboardingViewModel(

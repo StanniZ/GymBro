@@ -25,6 +25,16 @@ final class HistorySessionViewModel: ObservableObject {
         }
     }
     
+    // Last recorded sets for a given exercise (most recent session first)
+    func lastSets(for exerciseID: Int) -> [ExerciseSetModel] {
+        for session in sessions {
+            if let exercise = session.exercises.first(where: { $0.exerciseID == exerciseID }) {
+                return exercise.sets
+            }
+        }
+        return []
+    }
+
     func deleteSession(id: UUID) {
         if let idx = sessions.firstIndex(where: { $0.id == id }) {
             sessions.remove(at: idx)

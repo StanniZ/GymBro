@@ -8,6 +8,16 @@ import SwiftUI
 
 struct ExerciseList: View {
     @Binding var exercise: SessionExerciseModel
+    @EnvironmentObject var historyVM: HistorySessionViewModel
+    var onDelete: (() -> Void)? = nil
+
+    private var exerciseName: String {
+        ExerciseLoader.byID[exercise.exerciseID]?.name ?? "Exercise \(exercise.exerciseID)"
+    }
+
+    private var previousSets: [ExerciseSetModel] {
+        historyVM.lastSets(for: exercise.exerciseID)
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -18,10 +28,6 @@ struct ExerciseList: View {
         }
         .background(Color.backbutton)
         .cornerRadius(16)
-    }
-
-    private var exerciseName: String {
-        ExerciseLoader.byID[exercise.exerciseID]?.name ?? "Exercise \(exercise.exerciseID)"
     }
 
     // MARK: - Header
@@ -36,6 +42,16 @@ struct ExerciseList: View {
             Text("\(exercise.sets.count) sets")
                 .font(AppFont.caption)
                 .foregroundColor(.white.opacity(0.4))
+            if let onDelete {
+                Button(action: onDelete) {
+                    Image(systemName: "trash")
+                        .font(.system(size: 13))
+                        .foregroundColor(.red.opacity(0.6))
+                        .frame(width: 28, height: 28)
+                        .background(Color.red.opacity(0.08))
+                        .cornerRadius(7)
+                }
+            }
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 12)
@@ -47,12 +63,10 @@ struct ExerciseList: View {
         VStack(spacing: 0) {
             // Column headers
             HStack {
-                Text("#")
-                    .frame(width: 28, alignment: .center)
-                Text("Weight")
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                Text("Reps")
-                    .frame(width: 80, alignment: .center)
+                Text("#").frame(width: 28, alignment: .center)
+                Text("Prev").frame(width: 68, alignment: .leading)
+                Text("Weight").frame(maxWidth: .infinity, alignment: .leading)
+                Text("Reps").frame(width: 74, alignment: .center)
                 Spacer().frame(width: 28)
             }
             .font(.system(size: 11, weight: .semibold))
@@ -63,9 +77,10 @@ struct ExerciseList: View {
             Divider().background(Color.white.opacity(0.04))
 
             ForEach(Array($exercise.sets.enumerated()), id: \.1.id) { index, $set in
-                SetRow(index: index + 1, set: $set, onRemove: {
+                let prev = index < previousSets.count ? previousSets[index] : nil
+                SetRow(index: index + 1, set: $set, previous: prev) {
                     removeSet(id: set.id)
-                })
+                }
                 if index < exercise.sets.count - 1 {
                     Divider().background(Color.white.opacity(0.04)).padding(.horizontal, 14)
                 }
@@ -100,8 +115,12 @@ struct ExerciseList: View {
 
     private func addSet() {
         guard exercise.sets.count < 20 else { return }
+        // Pre-fill with previous set values if available
+        let lastSet = exercise.sets.last
+        let prevWeight = lastSet?.weightKg ?? 0
+        let prevReps   = lastSet?.reps ?? 0
         exercise.sets.append(
-            ExerciseSetModel(reps: 0, weightKg: 0, isCompleted: false,
+            ExerciseSetModel(reps: prevReps, weightKg: prevWeight, isCompleted: false,
                              timestamp: Date(), position: exercise.sets.count + 1)
         )
     }
@@ -112,10 +131,18 @@ struct ExerciseList: View {
 private struct SetRow: View {
     let index: Int
     @Binding var set: ExerciseSetModel
+    let previous: ExerciseSetModel?
     let onRemove: () -> Void
 
     @FocusState private var weightFocused: Bool
     @FocusState private var repsFocused: Bool
+
+    private var prevLabel: String {
+        guard let p = previous else { return "—" }
+        if p.weightKg <= 0 && p.reps <= 0 { return "—" }
+        if p.weightKg <= 0 { return "\(p.reps) reps" }
+        return String(format: "%.0f×%d", p.weightKg, p.reps)
+    }
 
     var body: some View {
         HStack(spacing: 8) {
@@ -125,6 +152,13 @@ private struct SetRow: View {
                 .foregroundColor(.white.opacity(0.4))
                 .frame(width: 28, alignment: .center)
 
+            // Previous performance
+            Text(prevLabel)
+                .font(.system(size: 12, weight: .medium))
+                .foregroundColor(.white.opacity(previous != nil ? 0.3 : 0.15))
+                .frame(width: 68, alignment: .leading)
+                .lineLimit(1)
+
             // Weight field
             HStack(alignment: .lastTextBaseline, spacing: 3) {
                 TextField("0", value: $set.weightKg,
@@ -133,7 +167,7 @@ private struct SetRow: View {
                     .foregroundColor(.white)
                     .font(.system(size: 15, weight: .medium))
                     .multilineTextAlignment(.trailing)
-                    .frame(width: 52)
+                    .frame(width: 50)
                     .focused($weightFocused)
                 Text("kg")
                     .font(AppFont.caption)
@@ -154,13 +188,13 @@ private struct SetRow: View {
                     .foregroundColor(.white)
                     .font(.system(size: 15, weight: .medium))
                     .multilineTextAlignment(.trailing)
-                    .frame(width: 34)
+                    .frame(width: 32)
                     .focused($repsFocused)
                 Text("×")
                     .font(AppFont.caption)
                     .foregroundColor(.white.opacity(0.35))
             }
-            .frame(width: 80)
+            .frame(width: 74)
             .padding(.horizontal, 10)
             .padding(.vertical, 7)
             .background(

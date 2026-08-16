@@ -41,13 +41,12 @@ struct SettingsItemView: View {
     @ViewBuilder
     private func destinationView(for destination: SettingsDestination) -> some View {
         switch destination {
-        case .account:        AccountView()
-        case .goals:          GoalsView()
-        case .support:        SupportView()
-        case .weightUnit:     WeightUnitView(viewModel: viewModel)
-        case .workoutHistory: HistorySessionView()
-        case .appleHealth:    AppleHealthSettingsView()
-        case .logout:         LogoutView()
+        case .account:     AccountView()
+        case .goals:       GoalsView()
+        case .support:     SupportView()
+        case .weightUnit:  WeightUnitView(viewModel: viewModel)
+        case .appleHealth: AppleHealthSettingsView()
+        case .logout:      LogoutView()
         }
     }
 }
