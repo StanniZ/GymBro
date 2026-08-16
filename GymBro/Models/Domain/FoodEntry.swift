@@ -48,9 +48,67 @@ struct DailyNutritionLog: Codable {
     var meals: [MealSection]
 }
 
+// MARK: - Nutrition Goal Mode
+
+enum NutritionGoalMode: String, CaseIterable {
+    case maintain = "maintain"
+    case bulk     = "bulk"
+    case cut      = "cut"
+    case custom   = "custom"
+
+    var displayName: String {
+        switch self {
+        case .maintain: return "Maintain"
+        case .bulk:     return "Bulk"
+        case .cut:      return "Cut"
+        case .custom:   return "Custom"
+        }
+    }
+
+    var subtitle: String {
+        switch self {
+        case .maintain: return "Keep current weight"
+        case .bulk:     return "Gain muscle (+15% cal)"
+        case .cut:      return "Lose fat (−20% cal)"
+        case .custom:   return "Set your own targets"
+        }
+    }
+
+    var calorieMultiplier: Double {
+        switch self {
+        case .maintain: return 1.00
+        case .bulk:     return 1.15
+        case .cut:      return 0.80
+        case .custom:   return 1.00
+        }
+    }
+
+    var proteinFraction: Double {
+        switch self {
+        case .maintain: return 0.30
+        case .bulk:     return 0.35
+        case .cut:      return 0.40
+        case .custom:   return 0.30
+        }
+    }
+
+    var fatFraction: Double { 0.25 }
+
+    var carbsFraction: Double {
+        switch self {
+        case .maintain: return 0.45
+        case .bulk:     return 0.40
+        case .cut:      return 0.35
+        case .custom:   return 0.45
+        }
+    }
+}
+
 // MARK: - TDEE Calculator (Mifflin-St Jeor)
+
 enum NutritionCalculator {
-    static func targets(for profile: UserProfile) -> NutritionTargets? {
+    static func targets(for profile: UserProfile,
+                        mode: NutritionGoalMode = .maintain) -> NutritionTargets? {
         guard profile.weight > 0, profile.height > 0, profile.age > 0 else { return nil }
         let w = profile.weight
         let h = Double(profile.height)
@@ -58,20 +116,19 @@ enum NutritionCalculator {
 
         let bmr: Double
         switch profile.gender {
-        case .male:
-            bmr = 10 * w + 6.25 * h - 5 * a + 5
-        case .female:
-            bmr = 10 * w + 6.25 * h - 5 * a - 161
-        case .uknown:
-            bmr = 10 * w + 6.25 * h - 5 * a - 78
+        case .male:   bmr = 10 * w + 6.25 * h - 5 * a + 5
+        case .female: bmr = 10 * w + 6.25 * h - 5 * a - 161
+        case .uknown: bmr = 10 * w + 6.25 * h - 5 * a - 78
         }
 
-        let tdee = bmr * 1.55  // moderate activity (gym user)
+        let tdee = bmr * 1.55
+        let calories = tdee * mode.calorieMultiplier
+
         return NutritionTargets(
-            calories: Int(tdee.rounded()),
-            protein: (tdee * 0.30) / 4.0,
-            fat:     (tdee * 0.25) / 9.0,
-            carbs:   (tdee * 0.45) / 4.0
+            calories: Int(calories.rounded()),
+            protein:  (calories * mode.proteinFraction) / 4.0,
+            fat:      (calories * mode.fatFraction)     / 9.0,
+            carbs:    (calories * mode.carbsFraction)   / 4.0
         )
     }
 }

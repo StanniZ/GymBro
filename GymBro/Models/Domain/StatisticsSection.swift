@@ -9,13 +9,13 @@
 enum StatisticsSection: CaseIterable {
     case history
     case exercise
-    case body
-    
+    case nutrition
+
     var title: String {
         switch self {
-        case .history: return "History"
-        case .exercise: return "Exercise"
-        case .body: return "Body"
+        case .history:   return "History"
+        case .exercise:  return "Exercise"
+        case .nutrition: return "Nutrition"
         }
     }
 }

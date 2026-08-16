@@ -12,6 +12,13 @@ final class FoodTrackerViewModel: ObservableObject {
 
     private var todayKey: String { dateKey(for: Date()) }
 
+    // UserDefaults keys
+    static let goalModeKey      = "gymbro_nutrition_goal_mode"
+    static let customCaloriesKey = "goal_daily_calories"
+    static let customProteinKey  = "gymbro_custom_protein_g"
+    static let customFatKey      = "gymbro_custom_fat_g"
+    static let customCarbsKey    = "gymbro_custom_carbs_g"
+
     init() {
         loadTodayLog()
     }
@@ -19,25 +26,22 @@ final class FoodTrackerViewModel: ObservableObject {
     // MARK: - Totals
 
     var totalCalories: Int    { meals.reduce(0) { $0 + $1.totalCalories } }
-    var totalProtein: Double  { meals.reduce(0) { $0 + $1.totalProtein } }
-    var totalFat: Double      { meals.reduce(0) { $0 + $1.totalFat } }
-    var totalCarbs: Double    { meals.reduce(0) { $0 + $1.totalCarbs } }
+    var totalProtein:  Double { meals.reduce(0) { $0 + $1.totalProtein } }
+    var totalFat:      Double { meals.reduce(0) { $0 + $1.totalFat } }
+    var totalCarbs:    Double { meals.reduce(0) { $0 + $1.totalCarbs } }
 
     var caloriesProgress: Double {
         guard let t = targets, t.calories > 0 else { return 0 }
         return min(1.0, Double(totalCalories) / Double(t.calories))
     }
-
     var proteinProgress: Double {
         guard let t = targets, t.protein > 0 else { return 0 }
         return min(1.0, totalProtein / t.protein)
     }
-
     var fatProgress: Double {
         guard let t = targets, t.fat > 0 else { return 0 }
         return min(1.0, totalFat / t.fat)
     }
-
     var carbsProgress: Double {
         guard let t = targets, t.carbs > 0 else { return 0 }
         return min(1.0, totalCarbs / t.carbs)
@@ -46,7 +50,29 @@ final class FoodTrackerViewModel: ObservableObject {
     // MARK: - Targets
 
     func updateTargets(from profile: UserProfile) {
-        targets = NutritionCalculator.targets(for: profile)
+        let modeRaw = UserDefaults.standard.string(forKey: Self.goalModeKey) ?? ""
+        let mode = NutritionGoalMode(rawValue: modeRaw) ?? .maintain
+
+        if mode == .custom {
+            targets = customTargets()
+        } else {
+            targets = NutritionCalculator.targets(for: profile, mode: mode)
+        }
+    }
+
+    private func customTargets() -> NutritionTargets? {
+        let kcal = UserDefaults.standard.integer(forKey: Self.customCaloriesKey)
+        guard kcal > 0 else { return nil }
+        let protein = UserDefaults.standard.double(forKey: Self.customProteinKey)
+        let fat     = UserDefaults.standard.double(forKey: Self.customFatKey)
+        let carbs   = UserDefaults.standard.double(forKey: Self.customCarbsKey)
+        let kd = Double(kcal)
+        return NutritionTargets(
+            calories: kcal,
+            protein:  protein > 0 ? protein : kd * 0.30 / 4,
+            fat:      fat     > 0 ? fat     : kd * 0.25 / 9,
+            carbs:    carbs   > 0 ? carbs   : kd * 0.45 / 4
+        )
     }
 
     // MARK: - Meal CRUD
@@ -107,9 +133,22 @@ final class FoodTrackerViewModel: ObservableObject {
         return try? decoder.decode(DailyNutritionLog.self, from: data)
     }
 
+    // Return last N days (newest first) that have data
+    func recentLogs(days: Int = 7) -> [(date: Date, log: DailyNutritionLog)] {
+        var result: [(Date, DailyNutritionLog)] = []
+        let cal = Calendar.current
+        for offset in 0..<days {
+            if let date = cal.date(byAdding: .day, value: -offset, to: Date()),
+               let l = log(for: date) {
+                result.append((date, l))
+            }
+        }
+        return result
+    }
+
     // MARK: - Helpers
 
-    private func dateKey(for date: Date) -> String {
+    func dateKey(for date: Date) -> String {
         let df = DateFormatter()
         df.dateFormat = "yyyy-MM-dd"
         return df.string(from: date)

@@ -8,24 +8,28 @@ import SwiftUI
 
 struct StatisticsSectionPicker: View {
     @Binding var selection: StatisticsSection
-    
+
     var body: some View {
-        HStack(spacing: 0) {
+        HStack(spacing: 4) {
             ForEach(StatisticsSection.allCases, id: \.self) { section in
                 Button {
-                    selection = section
+                    withAnimation(.easeInOut(duration: 0.2)) { selection = section }
                 } label: {
                     Text(section.title)
-                        .font(.system(size: 18, weight: .regular))
-                        .foregroundStyle(selection == section ? Color.white.opacity(0.8) : Color.weekDay)
-                        .shadow(color: selection == section ? Color.currentday : Color.clear, radius: 4, x: 0, y: 0)
+                        .font(.system(size: 14, weight: selection == section ? .semibold : .regular))
+                        .foregroundColor(selection == section ? .black : .white.opacity(0.4))
                         .frame(maxWidth: .infinity)
-                        .padding(.vertical, 6)
+                        .padding(.vertical, 9)
+                        .background(
+                            RoundedRectangle(cornerRadius: 14)
+                                .fill(selection == section ? Color.currentday : Color.clear)
+                        )
                 }
+                .buttonStyle(.plain)
             }
         }
+        .padding(4)
         .background(Color.backbutton)
-        .clipShape(RoundedRectangle(cornerRadius: 18 ,style: .continuous))
-        .padding(.horizontal, 8)
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 }
