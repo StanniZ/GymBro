@@ -41,6 +41,7 @@ struct ContentView: View {
 
 struct FirstLaunchFlowView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject private var authSession: AuthSession
     @State private var step: Step = .onboarding
     
     enum Step {
@@ -51,9 +52,13 @@ struct FirstLaunchFlowView: View {
         switch step {
         case .onboarding:
             OnboardingView {
-                step = .login
+                if authSession.isAuthenticated {
+                    appState.completeFirstLaunch()
+                } else {
+                    step = .login
+                }
             }
-            case .login:
+        case .login:
             LoginView {
                 appState.completeFirstLaunch()
             }

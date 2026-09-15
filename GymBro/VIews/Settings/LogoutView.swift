@@ -7,7 +7,7 @@
 import SwiftUI
 
 struct LogoutView: View {
-    @EnvironmentObject var appState: AppState
+    @EnvironmentObject private var authSession: AuthSession
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -22,7 +22,7 @@ struct LogoutView: View {
             }
             .padding(.horizontal, 32)
         }
-        .navigationTitle("Log Out")
+        .navigationTitle("Sign Out")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Color.backmain, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar)
@@ -41,10 +41,10 @@ struct LogoutView: View {
 
     private var textSection: some View {
         VStack(spacing: 10) {
-            Text("Are you sure?")
+            Text("Sign out?")
                 .font(AppFont.headline)
                 .foregroundColor(.white)
-            Text("You will be returned to the welcome screen. Your workout data will be kept on this device.")
+            Text("Your workouts stay on this device. You can keep using GymBro anonymously.")
                 .font(AppFont.subheadline)
                 .foregroundColor(.weekDay)
                 .multilineTextAlignment(.center)
@@ -53,8 +53,11 @@ struct LogoutView: View {
 
     private var actionsSection: some View {
         VStack(spacing: 12) {
-            Button(action: { appState.logout() }) {
-                Text("Log Out")
+            Button(action: {
+                authSession.signOut()
+                dismiss()
+            }) {
+                Text("Sign Out")
                     .font(AppFont.body)
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)

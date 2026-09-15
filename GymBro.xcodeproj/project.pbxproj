@@ -6,8 +6,37 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		FA8BDF103057F98C002EE360 /* GymBro Watch App Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = FA8BDF063057F98A002EE360 /* GymBro Watch App Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		FA8BDF0E3057F98C002EE360 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = FA8B72112DE9A73D00B2D41E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FA8BDF053057F98A002EE360;
+			remoteInfo = "GymBro Watch App Watch App";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		FA8BDF113057F98C002EE360 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				FA8BDF103057F98C002EE360 /* GymBro Watch App Watch App.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		FA8B72192DE9A73D00B2D41E /* GymBro.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GymBro.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FA8BDF063057F98A002EE360 /* GymBro Watch App Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "GymBro Watch App Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -29,10 +58,22 @@
 			path = GymBro;
 			sourceTree = "<group>";
 		};
+		FA8BDF073057F98A002EE360 /* GymBro Watch App */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "GymBro Watch App";
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		FA8B72162DE9A73D00B2D41E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA8BDF033057F98A002EE360 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -46,6 +87,7 @@
 			isa = PBXGroup;
 			children = (
 				FA8B721B2DE9A73D00B2D41E /* GymBro */,
+				FA8BDF073057F98A002EE360 /* GymBro Watch App */,
 				FA8B721A2DE9A73D00B2D41E /* Products */,
 			);
 			sourceTree = "<group>";
@@ -54,6 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				FA8B72192DE9A73D00B2D41E /* GymBro.app */,
+				FA8BDF063057F98A002EE360 /* GymBro Watch App Watch App.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -68,10 +111,12 @@
 				FA8B72152DE9A73D00B2D41E /* Sources */,
 				FA8B72162DE9A73D00B2D41E /* Frameworks */,
 				FA8B72172DE9A73D00B2D41E /* Resources */,
+				FA8BDF113057F98C002EE360 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				FA8BDF0F3057F98C002EE360 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				FA8B721B2DE9A73D00B2D41E /* GymBro */,
@@ -83,6 +128,28 @@
 			productReference = FA8B72192DE9A73D00B2D41E /* GymBro.app */;
 			productType = "com.apple.product-type.application";
 		};
+		FA8BDF053057F98A002EE360 /* GymBro Watch App Watch App */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FA8BDF143057F98C002EE360 /* Build configuration list for PBXNativeTarget "GymBro Watch App Watch App" */;
+			buildPhases = (
+				FA8BDF023057F98A002EE360 /* Sources */,
+				FA8BDF033057F98A002EE360 /* Frameworks */,
+				FA8BDF043057F98A002EE360 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				FA8BDF073057F98A002EE360 /* GymBro Watch App */,
+			);
+			name = "GymBro Watch App Watch App";
+			packageProductDependencies = (
+			);
+			productName = "GymBro Watch App Watch App";
+			productReference = FA8BDF063057F98A002EE360 /* GymBro Watch App Watch App.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -90,11 +157,14 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1630;
+				LastSwiftUpdateCheck = 2660;
 				LastUpgradeCheck = 2620;
 				TargetAttributes = {
 					FA8B72182DE9A73D00B2D41E = {
 						CreatedOnToolsVersion = 16.3;
+					};
+					FA8BDF053057F98A002EE360 = {
+						CreatedOnToolsVersion = 26.6;
 					};
 				};
 			};
@@ -113,12 +183,20 @@
 			projectRoot = "";
 			targets = (
 				FA8B72182DE9A73D00B2D41E /* GymBro */,
+				FA8BDF053057F98A002EE360 /* GymBro Watch App Watch App */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		FA8B72172DE9A73D00B2D41E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FA8BDF043057F98A002EE360 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -135,7 +213,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FA8BDF023057F98A002EE360 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		FA8BDF0F3057F98C002EE360 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FA8BDF053057F98A002EE360 /* GymBro Watch App Watch App */;
+			targetProxy = FA8BDF0E3057F98C002EE360 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		FA8B722B2DE9A73E00B2D41E /* Debug */ = {
@@ -146,7 +239,7 @@
 				CODE_SIGN_ENTITLEMENTS = GymBro/GymBro.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = PSA29726YL;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
@@ -178,7 +271,7 @@
 				CODE_SIGN_ENTITLEMENTS = GymBro/GymBro.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = PSA29726YL;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_APP_SANDBOX = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
@@ -325,6 +418,72 @@
 			};
 			name = Release;
 		};
+		FA8BDF123057F98C002EE360 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "GymBro Watch App";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = sz.GymBro;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = sz.GymBro.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.5;
+			};
+			name = Debug;
+		};
+		FA8BDF133057F98C002EE360 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = "GymBro Watch App";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_WKCompanionAppBundleIdentifier = sz.GymBro;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = sz.GymBro.watchkitapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 26.5;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -342,6 +501,15 @@
 			buildConfigurations = (
 				FA8B722B2DE9A73E00B2D41E /* Debug */,
 				FA8B722C2DE9A73E00B2D41E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FA8BDF143057F98C002EE360 /* Build configuration list for PBXNativeTarget "GymBro Watch App Watch App" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FA8BDF123057F98C002EE360 /* Debug */,
+				FA8BDF133057F98C002EE360 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -7,6 +7,7 @@
 import SwiftUI
 
 struct LoginView: View {
+    @EnvironmentObject private var authSession: AuthSession
     @State private var emailText: String = ""
     @State private var passwordText: String = ""
     @State private var secureTextEntry: Bool = true
@@ -26,6 +27,7 @@ struct LoginView: View {
                 login
                 separator
                 appleAuthorization
+                appleAuthorizationError
                 signUp
                 Spacer()
             }
@@ -169,23 +171,18 @@ struct LoginView: View {
     }
     
     private var appleAuthorization: some View {
-        Button(action: {
-            
-        }) {
-            ZStack{
-                RoundedRectangle(cornerRadius: 30)
-                    .fill(Color.backbutton.opacity(0.95))
-                    .frame(height: 50)
-                    .frame(maxWidth: .infinity)
-                    .shadow(color: Color.white.opacity(0.2), radius: 0.3, x: 2, y: -1)
-                HStack(spacing: 14){
-                    Image(systemName: "applelogo")
-                        .font(.system(size: 22))
-                    Text("Login with Apple")
-                        .font(.system(size: 16))
-                }
-                .foregroundColor(Color.white)
-            }
+        AppleSignInButtonView(onSuccess: onFinish)
+    }
+
+    @ViewBuilder
+    private var appleAuthorizationError: some View {
+        if case .failed(let errorMessage) = authSession.state {
+            Text(errorMessage)
+                .font(.system(size: 13))
+                .foregroundStyle(.red.opacity(0.9))
+                .multilineTextAlignment(.center)
+                .frame(maxWidth: .infinity)
+                .padding(.horizontal, 8)
         }
     }
     

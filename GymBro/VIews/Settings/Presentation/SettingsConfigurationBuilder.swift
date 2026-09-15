@@ -53,12 +53,6 @@ struct SettingsConfigurationBuilder {
                     icon: "questionmark.circle.fill",
                     iconColor: .teal,
                     destination: .support
-                )),
-                .navigation(.init(
-                    title: "Log Out",
-                    icon: "rectangle.portrait.and.arrow.right",
-                    iconColor: .red,
-                    destination: .logout
                 ))
             ])
         ])

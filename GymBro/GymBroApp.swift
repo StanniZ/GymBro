@@ -18,10 +18,12 @@ struct GymBroApp: App {
     @StateObject private var currentSessionProvider: CurrentSessionManager
     @StateObject private var timerSession = SessionTimerViewModel()
     @StateObject private var appState = AppState()
+    @StateObject private var authSession = AuthSession()
     @StateObject private var settings = SettingsViewModel()
     @StateObject private var history: HistorySessionViewModel
     @StateObject private var profileVM: OnboardingViewModel
     @StateObject private var foodVM = FoodTrackerViewModel()
+    @StateObject private var watchSyncService = PhoneWatchConnectivityService()
 
     init() {
         let persistenceController = PersistenceController.shared
@@ -60,6 +62,7 @@ struct GymBroApp: App {
                 .environmentObject(buildSessionVM)
                 .environmentObject(todaySessionVM)
                 .environmentObject(appState)
+                .environmentObject(authSession)
                 .environmentObject(currentSessionProvider)
                 .environmentObject(settings)
                 .environmentObject(history)
@@ -67,7 +70,11 @@ struct GymBroApp: App {
                 .environmentObject(timerSession)
                 .environmentObject(profileVM)
                 .environmentObject(foodVM)
+                .environmentObject(watchSyncService)
                 .environment(\.managedObjectContext, persistenceController.context)
+                .task {
+                    watchSyncService.syncTemplates(BuiltInWorkoutTemplates.getBuildSession())
+                }
         }
     }
 }

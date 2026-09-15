@@ -9,6 +9,7 @@ import SwiftUI
 @MainActor
 struct OnboardingView: View {
     
+    @EnvironmentObject private var authSession: AuthSession
     @StateObject var viewModel = OnboardingViewModel(repository: CoreDataUserProfileRepository.shared)
     @State private var step = 0
     @State private var buttonOpacity: Double = 1.0
@@ -18,8 +19,10 @@ struct OnboardingView: View {
         ZStack{
             background
             card
-            VStack{
+            VStack(spacing: 12) {
                 Spacer()
+                appleAuthorization
+                appleAuthorizationError
                 nextButton
             }
         }
@@ -59,6 +62,22 @@ struct OnboardingView: View {
             .overlay(RoundedRectangle(cornerRadius: 28).stroke(Color.borderbtn, lineWidth: 0.5))
     }
     
+    private var appleAuthorization: some View {
+        AppleSignInButtonView()
+            .padding(.horizontal, 60)
+    }
+
+    @ViewBuilder
+    private var appleAuthorizationError: some View {
+        if case .failed(let errorMessage) = authSession.state {
+            Text(errorMessage)
+                .font(.system(size: 13))
+                .foregroundStyle(.red.opacity(0.9))
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 42)
+        }
+    }
+
     private var nextButton: some View {
         VStack{
             Button(action: {
