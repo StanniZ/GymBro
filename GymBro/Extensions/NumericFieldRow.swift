@@ -40,8 +40,8 @@ struct IntFieldRow: View {
         }
         .padding(.vertical, 14)
         .onAppear { draft = "\(value)" }
-        .onChange(of: value) { if !focused { draft = "\(value)" } }
-        .onChange(of: focused) { if !$0 { commit() } }
+        .onChange(of: value) { _, _ in if !focused { draft = "\(value)" } }
+        .onChange(of: focused) { _, isFocused in if !isFocused { commit() } }
     }
 
     private func commit() {
@@ -94,8 +94,8 @@ struct DoubleFieldRow: View {
         }
         .padding(.vertical, 14)
         .onAppear { draft = format(value) }
-        .onChange(of: value) { if !focused { draft = format(value) } }
-        .onChange(of: focused) { if !$0 { commit() } }
+        .onChange(of: value) { _, _ in if !focused { draft = format(value) } }
+        .onChange(of: focused) { _, isFocused in if !isFocused { commit() } }
     }
 
     private func commit() {

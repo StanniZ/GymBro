@@ -9,5 +9,5 @@ import Foundation
 
 protocol WatchWorkoutRepository {
     func fetchWorkoutTemplates() async throws -> [WatchWorkoutTemplate]
-    func submitFinishedWorkout(_ session: WatchWorkoutSession) async throws
+    func submitFinishedWorkout(_ session: WatchWorkoutSession, activeCalories: Double?) async throws
 }

@@ -19,7 +19,7 @@ struct GenderView: View {
             Spacer()
             ZStack{
                 RoundedRectangle(cornerRadius: heightLayer / 2)
-                    .fill(Color.blue.opacity(0.1))
+                    .fill(Color.backbutton.opacity(0.72))
                     .frame(width: widthLayer, height: heightLayer)
                     .overlay(RoundedRectangle(cornerRadius: heightLayer / 2).stroke(.borderbtn, lineWidth: 0.5))
                 VStack(spacing: 28){
@@ -39,7 +39,7 @@ struct GenderView: View {
         VStack{
             Text("Select your gender identity:")
                 .font(.system(size: 24, weight: .thin))
-                .foregroundStyle(.logincolor)
+                .foregroundStyle(Color.logincolor)
         }
         .padding(.top, 12)
         
@@ -47,54 +47,66 @@ struct GenderView: View {
     
     private var backLayer: some View {
         RoundedRectangle(cornerRadius: heightLayer / 2)
-            .fill(Color.blue.opacity(0.1))
+            .fill(Color.backbutton.opacity(0.72))
             .frame(width: widthLayer, height: heightLayer)
             .overlay(RoundedRectangle(cornerRadius: heightLayer / 2).stroke(.borderbtn, lineWidth: 0.5))
     }
     
     private var buttoMale: some View {
-        ZStack{
-            Circle()
-                .fill(buttonLinearGradient)
-                .frame(width: heightLayer / 2 - 30)
-                .overlay(Circle().stroke(.borderbtn, lineWidth: 0.7))
-            VStack(spacing: 16){
-                Text(Gender.male.displaySymbol)
-                    .font(.system(size: 60, weight: .bold))
-                    .foregroundStyle(.white)
-                    .shadow(radius: 3)
-                Text(Gender.male.displayName)
-                    .font(.system(size: 20, weight: .bold))
-                    .foregroundStyle(.white)
-                    .shadow(radius: 3)
-            }
-        }
+        genderButton(.male)
     }
     
     private var buttoFemale: some View {
-        ZStack{
-            Circle()
-                .fill(buttonLinearGradient)
-                .frame(width: heightLayer / 2 - 30)
-                .overlay(Circle().stroke(.borderbtn, lineWidth: 0.7))
-            VStack(spacing: 16){
-                Text(Gender.female.displaySymbol)
-                    .font(.system(size: 60, weight: .bold))
-                    .foregroundStyle(.white)
-                    .shadow(radius: 3)
-                Text(Gender.female.displayName)
-                    .font(.system(size: 20, weight: .bold))
-                    .foregroundStyle(.white)
-                    .shadow(radius: 3)
+        genderButton(.female)
+    }
+
+    private func genderButton(_ gender: Gender) -> some View {
+        Button {
+            withAnimation(.spring(response: 0.28, dampingFraction: 0.82)) {
+                viewModel.userProfile.gender = gender
+            }
+        } label: {
+            let isSelected = viewModel.userProfile.gender == gender
+
+            ZStack {
+                Circle()
+                    .fill(isSelected ? buttonLinearGradient : inactiveButtonGradient)
+                    .frame(width: heightLayer / 2 - 30)
+                    .overlay(
+                        Circle()
+                            .stroke(isSelected ? Color.currentday : Color.borderbtn.opacity(0.65), lineWidth: isSelected ? 2 : 0.7)
+                    )
+                VStack(spacing: 16) {
+                    Text(gender.displaySymbol)
+                        .font(.system(size: 60, weight: .bold))
+                        .foregroundStyle(Color.white)
+                        .shadow(radius: 3)
+                    Text(gender.displayName)
+                        .font(.system(size: 20, weight: .bold))
+                        .foregroundStyle(Color.white)
+                        .shadow(radius: 3)
+                }
             }
         }
+        .buttonStyle(.plain)
     }
-    
+
     private var buttonLinearGradient: LinearGradient {
         LinearGradient(
             gradient: Gradient(colors: [
-                Color(hex: "#A5CC82"),
-                Color(hex: "#00467F")
+                Color.currentday,
+                Color.logincolor
+            ]),
+            startPoint: .top,
+            endPoint: .bottom
+        )
+    }
+
+    private var inactiveButtonGradient: LinearGradient {
+        LinearGradient(
+            gradient: Gradient(colors: [
+                Color.backbutton.opacity(0.95),
+                Color.logincolor.opacity(0.35)
             ]),
             startPoint: .top,
             endPoint: .bottom

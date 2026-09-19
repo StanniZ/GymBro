@@ -6,6 +6,22 @@ struct NutritionProgressCard: View {
     private let arc: Double = 0.66
     private let lineWidth: CGFloat = 18
 
+    private var remainingCalories: Int {
+        max((vm.targets?.calories ?? 0) - vm.totalCalories, 0)
+    }
+
+    private var overCalories: Int {
+        max(vm.totalCalories - (vm.targets?.calories ?? 0), 0)
+    }
+
+    private var calorieColor: Color {
+        guard let target = vm.targets?.calories, target > 0 else { return .currentday }
+        let ratio = Double(vm.totalCalories) / Double(target)
+        if ratio > 1.0 { return .red }
+        if ratio > 0.9 { return .yellow }
+        return .currentday
+    }
+
     var body: some View {
         HStack(spacing: 16) {
             ZStack {
@@ -56,7 +72,7 @@ struct NutritionProgressCard: View {
     private var ringFill: some View {
         Circle()
             .trim(from: 0, to: arc * vm.caloriesProgress)
-            .stroke(Color.currentday, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
+            .stroke(calorieColor, style: StrokeStyle(lineWidth: lineWidth, lineCap: .round))
             .rotationEffect(.degrees(90 + (1 - arc) * 180))
             .animation(.easeOut(duration: 0.4), value: vm.caloriesProgress)
     }
@@ -72,6 +88,9 @@ struct NutritionProgressCard: View {
             Text("kcal")
                 .font(AppFont.caption)
                 .foregroundColor(.white.opacity(0.4))
+            Text(overCalories > 0 ? "\(overCalories) over" : "\(remainingCalories) left")
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundColor(calorieColor)
         }
     }
 }

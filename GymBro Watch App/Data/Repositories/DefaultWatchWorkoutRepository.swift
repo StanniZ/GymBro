@@ -20,7 +20,7 @@ final class DefaultWatchWorkoutRepository: WatchWorkoutRepository {
         return connectivityClient.templates.isEmpty ? WatchWorkoutFixtures.templates : connectivityClient.templates
     }
 
-    func submitFinishedWorkout(_ session: WatchWorkoutSession) async throws {
-        try connectivityClient.submitFinishedWorkout(session)
+    func submitFinishedWorkout(_ session: WatchWorkoutSession, activeCalories: Double?) async throws {
+        try connectivityClient.submitFinishedWorkout(session, activeCalories: activeCalories)
     }
 }

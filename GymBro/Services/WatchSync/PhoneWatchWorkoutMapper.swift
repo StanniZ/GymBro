@@ -31,11 +31,44 @@ enum PhoneWatchWorkoutMapper {
 
         return PhoneWatchExercisePlanPayload(
             id: exercise.id,
+            exerciseID: exercise.exerciseID,
             name: definition?.name ?? "Exercise \(exercise.exerciseID)",
             muscleGroup: muscleGroup,
             targetSets: max(exercise.setsCount, 1),
             defaultWeight: 0,
             defaultReps: max(exercise.reps, 1)
+        )
+    }
+
+    static func makeTrainingSession(from payload: PhoneWatchFinishedWorkoutPayload) -> TrainingSessionModel {
+        let duration = max(Int(payload.finishedAt.timeIntervalSince(payload.startedAt) / 60), 0)
+
+        return TrainingSessionModel(
+            id: payload.id,
+            name: payload.title,
+            durationMinutes: duration,
+            dayOfWeek: "",
+            calories: payload.activeCalories ?? 0,
+            startedAt: payload.startedAt,
+            finishedAt: payload.finishedAt,
+            isFinished: true,
+            exercises: payload.exercises.enumerated().map { exerciseIndex, exercise in
+                SessionExerciseModel(
+                    id: exercise.id,
+                    exerciseID: exercise.exerciseID,
+                    position: exerciseIndex,
+                    sets: exercise.sets.enumerated().map { setIndex, set in
+                        ExerciseSetModel(
+                            id: set.id,
+                            reps: set.reps,
+                            weightKg: set.weight,
+                            isCompleted: set.isCompleted,
+                            timestamp: set.isCompleted ? payload.finishedAt : nil,
+                            position: setIndex
+                        )
+                    }
+                )
+            }
         )
     }
 }

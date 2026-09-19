@@ -15,12 +15,18 @@ final class PhoneWatchConnectivityService: NSObject, ObservableObject {
     @Published private(set) var lastFinishedWorkout: PhoneWatchFinishedWorkoutPayload?
 
     private let session: WCSession?
+    private let workoutSessionProvider: WorkoutSessionProviderProtocol?
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
     private var latestTemplates: [WorkoutTemplateModel] = []
+    private var savedFinishedWorkoutIDs = Set<UUID>()
 
-    init(session: WCSession? = WCSession.isSupported() ? .default : nil) {
+    init(
+        session: WCSession? = WCSession.isSupported() ? .default : nil,
+        workoutSessionProvider: WorkoutSessionProviderProtocol? = nil
+    ) {
         self.session = session
+        self.workoutSessionProvider = workoutSessionProvider
         super.init()
         activate()
     }
@@ -58,6 +64,18 @@ final class PhoneWatchConnectivityService: NSObject, ObservableObject {
     private func handleFinishedWorkoutData(_ data: Data) {
         guard let payload = try? decoder.decode(PhoneWatchFinishedWorkoutPayload.self, from: data) else { return }
         lastFinishedWorkout = payload
+
+        guard savedFinishedWorkoutIDs.insert(payload.id).inserted else { return }
+        guard let workoutSessionProvider else { return }
+
+        let finishedSession = PhoneWatchWorkoutMapper.makeTrainingSession(from: payload)
+        Task {
+            do {
+                try await workoutSessionProvider.saveFinishedSession(finishedSession)
+            } catch {
+                savedFinishedWorkoutIDs.remove(payload.id)
+            }
+        }
     }
 }
 

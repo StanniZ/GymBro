@@ -18,7 +18,9 @@ final class TodaySessionViewModel: ObservableObject {
     private let provider: WorkoutSessionProviderProtocol
     private let templateRepository: WorkoutTemplateRepositoryProtocol
     private let currentSessionProvider: CurrentSessionManager
-    private var cancellable: AnyCancellable?
+    private var currentSessionCancellable: AnyCancellable?
+    private var draftSessionCancellable: AnyCancellable?
+    private var isApplyingCurrentSession = false
 
     init(provider: WorkoutSessionProviderProtocol,
          currentSessionProvider: CurrentSessionManager,
@@ -28,16 +30,28 @@ final class TodaySessionViewModel: ObservableObject {
         self.currentSessionProvider = currentSessionProvider
         self.draftSession = currentSessionProvider.currentSession
 
-        cancellable = currentSessionProvider.$currentSession
+        currentSessionCancellable = currentSessionProvider.$currentSession
             .receive(on: DispatchQueue.main)
             .sink { [weak self] session in
-                self?.draftSession = session
-                self?.state = .ready
+                guard let self else { return }
+                self.isApplyingCurrentSession = true
+                self.draftSession = session
+                self.state = .ready
+                self.isApplyingCurrentSession = false
+            }
+
+        draftSessionCancellable = $draftSession
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] session in
+                guard let self, !self.isApplyingCurrentSession else { return }
+                self.currentSessionProvider.setCurrentSession(session)
             }
     }
 
     func startSession() {
         draftSession.startedAt = Date()
+        currentSessionProvider.setCurrentSession(draftSession)
     }
 
     // Add exercises from picker during live workout

@@ -9,6 +9,7 @@ import PhotosUI
 
 struct AccountView: View {
     @EnvironmentObject var profileVM: OnboardingViewModel
+    @EnvironmentObject private var authSession: AuthSession
     @State private var pickerItem: PhotosPickerItem?
     @State private var saveSuccess = false
 
@@ -18,13 +19,16 @@ struct AccountView: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 16) {
                     avatarSection
+                    accountStateCard
                     infoCard
                     physicalCard
                 }
                 .padding(16)
                 .padding(.bottom, 32)
             }
+            .scrollDismissesKeyboard(.interactively)
         }
+        .dismissKeyboardOnTap()
         .navigationTitle("My Account")
         .navigationBarTitleDisplayMode(.inline)
         .toolbarBackground(Color.backmain, for: .navigationBar)
@@ -51,11 +55,13 @@ struct AccountView: View {
     // MARK: - Avatar
 
     private var avatarSection: some View {
-        VStack(spacing: 8) {
+        let avatarImage = profileVM.userAvatar
+
+        return VStack(spacing: 8) {
             PhotosPicker(selection: $pickerItem, matching: .images) {
                 ZStack(alignment: .bottomTrailing) {
                     Group {
-                        if let img = profileVM.userAvatar {
+                        if let img = avatarImage {
                             Image(uiImage: img)
                                 .resizable().scaledToFill()
                                 .frame(width: 96, height: 96)
@@ -95,6 +101,47 @@ struct AccountView: View {
     }
 
     // MARK: - Info Card (Name / Email / Gender)
+
+    private var accountStateCard: some View {
+        VStack(spacing: 0) {
+            cardHeader(title: "Apple Account", icon: "applelogo", color: .currentday)
+            Divider().background(Color.white.opacity(0.06))
+
+            HStack(spacing: 12) {
+                Text(authSession.isAuthenticated ? "Signed in" : "Anonymous mode")
+                    .font(AppFont.subheadline)
+                    .foregroundColor(.white)
+                Spacer()
+                Text(authSession.accountDescription)
+                    .font(AppFont.caption)
+                    .foregroundColor(.weekDay)
+                    .lineLimit(1)
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 14)
+
+            Divider().background(Color.white.opacity(0.06)).padding(.leading, 16)
+
+            if authSession.isAuthenticated {
+                Button {
+                    authSession.signOut()
+                } label: {
+                    settingsActionRow(title: "Sign Out", icon: "rectangle.portrait.and.arrow.right", color: .red)
+                }
+                .buttonStyle(.plain)
+            } else {
+                VStack(spacing: 10) {
+                    settingsActionRow(title: "Sign in with Apple", icon: "applelogo", color: .currentday)
+                    AppleSignInButtonView()
+                        .frame(maxWidth: .infinity)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 14)
+            }
+        }
+        .background(Color.backbutton)
+        .cornerRadius(20)
+    }
 
     private var infoCard: some View {
         VStack(spacing: 0) {
@@ -156,6 +203,22 @@ struct AccountView: View {
                 .font(AppFont.body)
                 .foregroundColor(.white)
         }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+    }
+
+    private func settingsActionRow(title: String, icon: String, color: Color) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundColor(color)
+                .frame(width: 24)
+            Text(title)
+                .font(AppFont.subheadline)
+                .foregroundColor(.white)
+            Spacer()
+        }
+        .contentShape(Rectangle())
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
     }

@@ -14,6 +14,8 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
+            Color.backmain.ignoresSafeArea()
+
             switch appState.phase {
             case .firstLaunch:
                 FirstLaunchFlowView()
@@ -32,6 +34,7 @@ struct ContentView: View {
                 .transition(.opacity)
             }
         }
+        .background(Color.backmain.ignoresSafeArea())
         .animation(.easeInOut(duration: 2.0), value: appState.phase)
 //        .onAppear {
 //            CoreDataSeeder.shared.deleteAllSession()
@@ -53,15 +56,23 @@ struct FirstLaunchFlowView: View {
         case .onboarding:
             OnboardingView {
                 if authSession.isAuthenticated {
-                    appState.completeFirstLaunch()
+                    withAnimation(.easeInOut(duration: 0.45)) {
+                        appState.completeFirstLaunch()
+                    }
                 } else {
-                    step = .login
+                    withAnimation(.easeInOut(duration: 0.35)) {
+                        step = .login
+                    }
                 }
             }
+            .transition(.opacity)
         case .login:
             LoginView {
-                appState.completeFirstLaunch()
+                withAnimation(.easeInOut(duration: 0.45)) {
+                    appState.completeFirstLaunch()
+                }
             }
+            .transition(.opacity)
         }
     }
 }

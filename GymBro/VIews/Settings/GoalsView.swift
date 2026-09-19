@@ -45,11 +45,11 @@ struct GoalsView: View {
         .toolbarBackground(Color.backmain, for: .navigationBar)
         .toolbarColorScheme(.dark, for: .navigationBar)
         .task { try? await profileVM.fetchUserProfile() }
-        .onChange(of: goalModeRaw)      { _ in foodVM.updateTargets(from: profileVM.userProfile) }
-        .onChange(of: customCalories)   { _ in foodVM.updateTargets(from: profileVM.userProfile) }
-        .onChange(of: customProtein)    { _ in foodVM.updateTargets(from: profileVM.userProfile) }
-        .onChange(of: customFat)        { _ in foodVM.updateTargets(from: profileVM.userProfile) }
-        .onChange(of: customCarbs)      { _ in foodVM.updateTargets(from: profileVM.userProfile) }
+        .onChange(of: goalModeRaw)      { _, _ in foodVM.updateTargets(from: profileVM.userProfile) }
+        .onChange(of: customCalories)   { _, _ in foodVM.updateTargets(from: profileVM.userProfile) }
+        .onChange(of: customProtein)    { _, _ in foodVM.updateTargets(from: profileVM.userProfile) }
+        .onChange(of: customFat)        { _, _ in foodVM.updateTargets(from: profileVM.userProfile) }
+        .onChange(of: customCarbs)      { _, _ in foodVM.updateTargets(from: profileVM.userProfile) }
     }
 
     // MARK: - Summary Banner

@@ -2,13 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSHealthShareUsageDescriptio</key>
-	<string>GymBro reads health data to improve your workout experience</string>
+	<key>NSCameraUsageDescription</key>
+	<string>GymBro uses the camera so you can add a profile photo.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>GymBro reads workout health data to show live workout metrics when you allow access.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>GymBro saves finished workouts to Apple Health</string>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>remote-notification</string>
-	</array>
 </dict>
 </plist>

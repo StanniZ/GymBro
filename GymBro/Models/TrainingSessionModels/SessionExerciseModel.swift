@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct SessionExerciseModel: Identifiable {
+struct SessionExerciseModel: Identifiable, Codable, Equatable {
     var id: UUID
     var exerciseID: Int
     var position: Int

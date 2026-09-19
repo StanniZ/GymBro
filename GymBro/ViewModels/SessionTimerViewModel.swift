@@ -9,6 +9,7 @@ import SwiftUI
 final class SessionTimerViewModel: ObservableObject, SessionTimerProtocol {
     @Published var elapsedTime: TimeInterval = 0
     @Published var isRunning: Bool = false
+    @Published var isPaused: Bool = false
 
     private var startDate: Date?
     private var timerTask: Task<Void, Never>?
@@ -28,7 +29,8 @@ final class SessionTimerViewModel: ObservableObject, SessionTimerProtocol {
     func start() {
         guard !isRunning else { return }
         isRunning = true
-        startDate = Date()
+        isPaused = false
+        startDate = Date().addingTimeInterval(-elapsedTime)
 
         timerTask = Task {
             while !Task.isCancelled {
@@ -42,8 +44,18 @@ final class SessionTimerViewModel: ObservableObject, SessionTimerProtocol {
         }
     }
 
+    func pause() {
+        guard isRunning else { return }
+        isRunning = false
+        isPaused = true
+        timerTask?.cancel()
+        timerTask = nil
+        startDate = nil
+    }
+
     func finishSession() {
         isRunning = false
+        isPaused = false
         timerTask?.cancel()
         timerTask = nil
         startDate = nil

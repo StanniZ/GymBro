@@ -33,6 +33,7 @@ struct PhoneWatchWorkoutTemplatePayload: Codable, Equatable, Identifiable {
 
 struct PhoneWatchExercisePlanPayload: Codable, Equatable, Identifiable {
     let id: UUID
+    let exerciseID: Int
     let name: String
     let muscleGroup: String
     let targetSets: Int
@@ -45,11 +46,13 @@ struct PhoneWatchFinishedWorkoutPayload: Codable, Equatable {
     let title: String
     let startedAt: Date
     let finishedAt: Date
+    let activeCalories: Int?
     let exercises: [PhoneWatchFinishedExercisePayload]
 }
 
 struct PhoneWatchFinishedExercisePayload: Codable, Equatable, Identifiable {
     let id: UUID
+    let exerciseID: Int
     let name: String
     let muscleGroup: String
     let isFinished: Bool

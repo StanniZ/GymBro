@@ -8,12 +8,14 @@ import SwiftUI
 
 @MainActor
 struct OnboardingView: View {
-    
-    @EnvironmentObject private var authSession: AuthSession
-    @StateObject var viewModel = OnboardingViewModel(repository: CoreDataUserProfileRepository.shared)
+
+    @EnvironmentObject private var viewModel: OnboardingViewModel
     @State private var step = 0
     @State private var buttonOpacity: Double = 1.0
+    @State private var flowOpacity: Double = 1.0
     var onFinish: () -> Void
+
+    private let finalStep = 3
     
     var body: some View {
         ZStack{
@@ -21,12 +23,12 @@ struct OnboardingView: View {
             card
             VStack(spacing: 12) {
                 Spacer()
-                appleAuthorization
-                appleAuthorizationError
                 nextButton
             }
         }
+        .opacity(flowOpacity)
         .ignoresSafeArea(.all)
+        .dismissKeyboardOnTap()
     }
     
     private var card: some View {
@@ -48,13 +50,17 @@ struct OnboardingView: View {
     }
     
     private var background: some View {
-        LinearGradient(
-            gradient: Gradient(colors: [
-                Color(hex: "304350"),
-                Color(hex: "464644")
-            ]),
-            startPoint: .leading,
-            endPoint: .trailing)
+        ZStack {
+            Color.backmain
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color.logincolor.opacity(0.22),
+                    Color.backmain.opacity(0.92)
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+        }
     }
     
     private var cardStyle: some View {
@@ -62,31 +68,16 @@ struct OnboardingView: View {
             .overlay(RoundedRectangle(cornerRadius: 28).stroke(Color.borderbtn, lineWidth: 0.5))
     }
     
-    private var appleAuthorization: some View {
-        AppleSignInButtonView()
-            .padding(.horizontal, 60)
-    }
-
-    @ViewBuilder
-    private var appleAuthorizationError: some View {
-        if case .failed(let errorMessage) = authSession.state {
-            Text(errorMessage)
-                .font(.system(size: 13))
-                .foregroundStyle(.red.opacity(0.9))
-                .multilineTextAlignment(.center)
-                .padding(.horizontal, 42)
-        }
-    }
-
     private var nextButton: some View {
         VStack{
             Button(action: {
-                buttonOpacity = 0.0
-                
-                Task{
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    buttonOpacity = 0.0
+                }
+
+                Task {
                     try await viewModel.saveUserProfile()
-                    //                    print(viewModel.userProfile.age)
-                    if step == 3 {
+                    if step == finalStep {
                         finish()
                     } else {
                         next()
@@ -109,9 +100,15 @@ struct OnboardingView: View {
             step += 1
         }
     }
-    
+
     private func finish() {
-        onFinish()
+        withAnimation(.easeInOut(duration: 0.35)) {
+            flowOpacity = 0.0
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+            onFinish()
+        }
     }
 }
 
@@ -134,4 +131,3 @@ struct CardContainer<Content: View>: View {
 //#Preview {
 //    OnboardingView()
 //}
-

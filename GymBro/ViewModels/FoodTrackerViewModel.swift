@@ -6,11 +6,14 @@ final class FoodTrackerViewModel: ObservableObject {
 
     @Published var meals: [MealSection] = []
     @Published var targets: NutritionTargets?
+    @Published var selectedDate: Date = Date()
+    @Published private(set) var recentFoods: [FoodEntry] = []
 
     private let encoder = JSONEncoder()
     private let decoder = JSONDecoder()
 
-    private var todayKey: String { dateKey(for: Date()) }
+    private var selectedDateKey: String { dateKey(for: selectedDate) }
+    private let recentFoodsKey = "gymbro_recent_food_entries"
 
     // UserDefaults keys
     static let goalModeKey      = "gymbro_nutrition_goal_mode"
@@ -20,7 +23,8 @@ final class FoodTrackerViewModel: ObservableObject {
     static let customCarbsKey    = "gymbro_custom_carbs_g"
 
     init() {
-        loadTodayLog()
+        loadLog(for: selectedDate)
+        loadRecentFoods()
     }
 
     // MARK: - Totals
@@ -29,6 +33,7 @@ final class FoodTrackerViewModel: ObservableObject {
     var totalProtein:  Double { meals.reduce(0) { $0 + $1.totalProtein } }
     var totalFat:      Double { meals.reduce(0) { $0 + $1.totalFat } }
     var totalCarbs:    Double { meals.reduce(0) { $0 + $1.totalCarbs } }
+    var hasLoggedFood: Bool { meals.contains { !$0.entries.isEmpty } }
 
     var caloriesProgress: Double {
         guard let t = targets, t.calories > 0 else { return 0 }
@@ -83,6 +88,14 @@ final class FoodTrackerViewModel: ObservableObject {
         save()
     }
 
+    func renameMealSection(id: UUID, title: String) {
+        guard let index = meals.firstIndex(where: { $0.id == id }) else { return }
+        let trimmed = title.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        meals[index].title = trimmed
+        save()
+    }
+
     func deleteMealSection(id: UUID) {
         meals.removeAll { $0.id == id }
         save()
@@ -91,6 +104,34 @@ final class FoodTrackerViewModel: ObservableObject {
     func addEntry(_ entry: FoodEntry, to mealID: UUID) {
         guard let idx = meals.firstIndex(where: { $0.id == mealID }) else { return }
         meals[idx].entries.append(entry)
+        rememberFood(entry)
+        save()
+    }
+
+    func clearEntries(from mealID: UUID) {
+        guard let idx = meals.firstIndex(where: { $0.id == mealID }) else { return }
+        meals[idx].entries.removeAll()
+        save()
+    }
+
+    func copyMealFromYesterday(to mealID: UUID) {
+        guard let mealIndex = meals.firstIndex(where: { $0.id == mealID }),
+              let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate),
+              let log = log(for: yesterday)
+        else { return }
+
+        let currentTitle = meals[mealIndex].title
+        guard let source = log.meals.first(where: { $0.title == currentTitle }) else { return }
+        meals[mealIndex].entries = source.entries.map { entry in
+            FoodEntry(
+                name: entry.name,
+                calories: entry.calories,
+                amountGrams: entry.amountGrams,
+                protein: entry.protein,
+                fat: entry.fat,
+                carbs: entry.carbs
+            )
+        }
         save()
     }
 
@@ -102,8 +143,43 @@ final class FoodTrackerViewModel: ObservableObject {
 
     // MARK: - Persistence
 
-    private func loadTodayLog() {
-        let key = storageKey(todayKey)
+    func selectDate(_ date: Date) {
+        save()
+        selectedDate = date
+        loadLog(for: date)
+    }
+
+    func moveSelectedDate(by days: Int) {
+        guard let date = Calendar.current.date(byAdding: .day, value: days, to: selectedDate) else { return }
+        selectDate(date)
+    }
+
+    func repeatYesterday() {
+        guard let yesterday = Calendar.current.date(byAdding: .day, value: -1, to: selectedDate),
+              let log = log(for: yesterday)
+        else { return }
+
+        meals = log.meals.map { meal in
+            MealSection(
+                title: meal.title,
+                entries: meal.entries.map { entry in
+                    FoodEntry(
+                        name: entry.name,
+                        calories: entry.calories,
+                        amountGrams: entry.amountGrams,
+                        protein: entry.protein,
+                        fat: entry.fat,
+                        carbs: entry.carbs
+                    )
+                }
+            )
+        }
+        save()
+    }
+
+    func loadLog(for date: Date) {
+        let dayKey = dateKey(for: date)
+        let key = storageKey(dayKey)
         if let data = UserDefaults.standard.data(forKey: key),
            let log = try? decoder.decode(DailyNutritionLog.self, from: data) {
             meals = log.meals
@@ -119,8 +195,8 @@ final class FoodTrackerViewModel: ObservableObject {
     }
 
     func save() {
-        let key = storageKey(todayKey)
-        let log = DailyNutritionLog(date: todayKey, meals: meals)
+        let key = storageKey(selectedDateKey)
+        let log = DailyNutritionLog(date: selectedDateKey, meals: meals)
         if let data = try? encoder.encode(log) {
             UserDefaults.standard.set(data, forKey: key)
         }
@@ -156,5 +232,29 @@ final class FoodTrackerViewModel: ObservableObject {
 
     private func storageKey(_ dateKey: String) -> String {
         "gymbro_food_log_\(dateKey)"
+    }
+
+    private func loadRecentFoods() {
+        guard let data = UserDefaults.standard.data(forKey: recentFoodsKey),
+              let foods = try? decoder.decode([FoodEntry].self, from: data)
+        else { return }
+        recentFoods = foods
+    }
+
+    private func rememberFood(_ entry: FoodEntry) {
+        let normalizedName = entry.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard !normalizedName.isEmpty else { return }
+
+        recentFoods.removeAll {
+            $0.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() == normalizedName
+        }
+        recentFoods.insert(entry, at: 0)
+        if recentFoods.count > 12 {
+            recentFoods = Array(recentFoods.prefix(12))
+        }
+
+        if let data = try? encoder.encode(recentFoods) {
+            UserDefaults.standard.set(data, forKey: recentFoodsKey)
+        }
     }
 }

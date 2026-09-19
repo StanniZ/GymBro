@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct TrainingSessionModel: Identifiable {
+struct TrainingSessionModel: Identifiable, Codable, Equatable {
     var id: UUID
     var name: String
     var durationMinutes: Int

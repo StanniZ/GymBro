@@ -31,7 +31,7 @@ struct PersonalInfoView: View {
             HStack{
                 Text("Hi!")
                     .font(.system(size: 24, weight: .thin))
-                    .foregroundColor(.orange)
+                    .foregroundColor(Color.logincolor)
                 Spacer()
             }
             HStack{
@@ -89,7 +89,7 @@ struct PersonalInfoView: View {
                 Text(". . .  The journey is made")
                     .lineLimit(2)
                     .font(.system(size: 24, weight: .thin, design: .rounded))
-                    .foregroundColor(.orange.opacity(0.8))
+                    .foregroundColor(Color.logincolor.opacity(0.85))
                 Spacer()
             }
             HStack{
@@ -97,11 +97,10 @@ struct PersonalInfoView: View {
                 Text("by those who take it.")
                     .italic()
                     .font(.system(size: 20, weight: .thin))
-                    .foregroundColor(.orange.opacity(0.7))
+                    .foregroundColor(Color.currentday.opacity(0.75))
             }
         }
         .padding(.horizontal, 10)
         .padding(.top, 60)
     }
 }
-

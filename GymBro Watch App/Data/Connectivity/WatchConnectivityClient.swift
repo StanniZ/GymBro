@@ -38,10 +38,11 @@ final class WatchConnectivityClient: NSObject, ObservableObject {
         }
     }
 
-    func submitFinishedWorkout(_ sessionModel: WatchWorkoutSession) throws {
+    func submitFinishedWorkout(_ sessionModel: WatchWorkoutSession, activeCalories: Double?) throws {
         guard let session, session.activationState == .activated else { return }
 
-        let payload = sessionModel.finishedPayload()
+        let roundedCalories = activeCalories.map { max(Int($0.rounded()), 0) }
+        let payload = sessionModel.finishedPayload(activeCalories: roundedCalories)
         let data = try encoder.encode(payload)
         let userInfo: [String: Any] = [
             WatchSyncMessageKey.type: WatchSyncMessageType.workoutCompleted,

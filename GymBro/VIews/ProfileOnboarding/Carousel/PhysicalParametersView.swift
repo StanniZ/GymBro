@@ -13,43 +13,67 @@ struct PhysicalParametersView: View {
     
     var body: some View {
         ZStack{
-            
-            text
-            
-            VStack{
-                
-//                customPicker
+            VStack(spacing: 18) {
+                title
+                customPicker
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .padding(16)
         .background(.backmain)
     }
-    
-//    private var customPicker: some View{
-//        GeometryReader{ geo in
-//            HStack {
-//                CustomPicker(selectedValue: $viewModel.userProfile.weight,
-//                             range: stride(from: 40.0, through: 200, by: 0.5).map { $0 },
-//                             selectedFontSize: 22, secondaryFontSize: 16)
-//                CustomPicker(selectedValue: $viewModel.userProfile.height,
-//                             range: Array(130...240),
-//                             selectedFontSize: 22, secondaryFontSize: 16)
-//                
-//            }
-//            .clipped()
-//            .position(x: geo.size.width / 2, y: geo.size.height / 2)
-//        }
-//    }
-    
-    private var text: some View {
-        GeometryReader{ geo in
-            Text("kg")
-                .position(x: geo.size.width / 2.3, y: geo.size.height / 2.22)
-                .foregroundStyle(.currentday)
-            Text("cm")
-                .position(x: geo.size.width / 1.07, y: geo.size.height / 2.22)
-                .foregroundStyle(.currentday)
+
+    private var title: some View {
+        VStack(spacing: 6) {
+            Text("Your body metrics")
+                .font(.system(size: 24, weight: .thin))
+                .foregroundStyle(Color.logincolor)
+            Text("Set your current weight and height")
+                .font(.system(size: 16, weight: .thin))
+                .foregroundStyle(Color.weekDay.opacity(0.8))
+        }
+    }
+
+    private var customPicker: some View {
+        HStack(spacing: 18) {
+            metricPicker(
+                title: "Weight",
+                unit: "kg",
+                picker: CustomPicker(
+                    selectedValue: $viewModel.userProfile.weight,
+                    range: stride(from: 40.0, through: 200.0, by: 0.5).map { $0 },
+                    selectedFontSize: 22,
+                    secondaryFontSize: 16
+                )
+            )
+
+            metricPicker(
+                title: "Height",
+                unit: "cm",
+                picker: CustomPicker(
+                    selectedValue: $viewModel.userProfile.height,
+                    range: Array(130...240),
+                    selectedFontSize: 22,
+                    secondaryFontSize: 16
+                )
+            )
+        }
+        .frame(maxHeight: 420)
+        .clipped()
+    }
+
+    private func metricPicker<Picker: View>(title: String, unit: String, picker: Picker) -> some View {
+        VStack(spacing: 8) {
+            Text(title)
+                .font(.system(size: 15, weight: .medium))
+                .foregroundStyle(Color.weekDay.opacity(0.85))
+
+            picker
+                .frame(maxWidth: .infinity)
+
+            Text(unit)
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Color.currentday)
         }
     }
 }

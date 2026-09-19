@@ -14,6 +14,24 @@ struct CustomPicker<T: Hashable & Comparable & Strideable & LosslessStringConver
     let range: [T]
     let selectedFontSize: CGFloat
     let secondaryFontSize: CGFloat
+    let selectedColor: Color
+    let secondaryColor: Color
+
+    init(
+        selectedValue: Binding<T>,
+        range: [T],
+        selectedFontSize: CGFloat,
+        secondaryFontSize: CGFloat,
+        selectedColor: Color = Color.currentday,
+        secondaryColor: Color = Color.weekDay.opacity(0.7)
+    ) {
+        self._selectedValue = selectedValue
+        self.range = range
+        self.selectedFontSize = selectedFontSize
+        self.secondaryFontSize = secondaryFontSize
+        self.selectedColor = selectedColor
+        self.secondaryColor = secondaryColor
+    }
     
     @State private var dragOffset: CGFloat = 0
     @State private var lastOffset: CGFloat = 0
@@ -37,7 +55,7 @@ struct CustomPicker<T: Hashable & Comparable & Strideable & LosslessStringConver
                         Text(String(value))
                             .font(.system(size: isClosest ? selectedFontSize : secondaryFontSize))
                             .fontWeight(isClosest ? .bold : .regular)
-                            .foregroundColor(isClosest ? .white : .gray.opacity(0.5))
+                            .foregroundColor(isClosest ? selectedColor : secondaryColor)
                             .scaleEffect(scaleEffect(for: distance))
                             .opacity(opacity(for: distance))
                             .frame(width: geo.size.width, height: 50)
@@ -104,4 +122,3 @@ struct CustomPicker<T: Hashable & Comparable & Strideable & LosslessStringConver
         return scale
     }
 }
-

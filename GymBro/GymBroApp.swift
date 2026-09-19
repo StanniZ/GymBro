@@ -23,7 +23,7 @@ struct GymBroApp: App {
     @StateObject private var history: HistorySessionViewModel
     @StateObject private var profileVM: OnboardingViewModel
     @StateObject private var foodVM = FoodTrackerViewModel()
-    @StateObject private var watchSyncService = PhoneWatchConnectivityService()
+    @StateObject private var watchSyncService: PhoneWatchConnectivityService
 
     init() {
         let persistenceController = PersistenceController.shared
@@ -51,6 +51,7 @@ struct GymBroApp: App {
             templateRepository: templateRepository
         ))
         _calendarVM = StateObject(wrappedValue: CalendarViewModel(provider: todayProvider))
+        _watchSyncService = StateObject(wrappedValue: PhoneWatchConnectivityService(workoutSessionProvider: todayProvider))
         _profileVM = StateObject(wrappedValue: OnboardingViewModel(
             repository: CoreDataUserProfileRepository.shared
         ))
@@ -73,6 +74,7 @@ struct GymBroApp: App {
                 .environmentObject(watchSyncService)
                 .environment(\.managedObjectContext, persistenceController.context)
                 .task {
+                    try? await profileVM.fetchUserProfile()
                     watchSyncService.syncTemplates(BuiltInWorkoutTemplates.getBuildSession())
                 }
         }

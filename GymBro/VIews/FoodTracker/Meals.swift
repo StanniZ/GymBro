@@ -7,6 +7,7 @@ struct MealSectionCard: View {
     @ObservedObject var vm: FoodTrackerViewModel
     @State private var isExpanded = true
     @State private var showAddFood = false
+    @State private var showRenameMeal = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -21,8 +22,11 @@ struct MealSectionCard: View {
         .cornerRadius(20)
         .sheet(isPresented: $showAddFood) {
             AddFoodEntrySheet(mealID: meal.id, vm: vm)
-                .presentationDetents([.fraction(0.6)])
+                .presentationDetents([.fraction(0.82)])
                 .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $showRenameMeal) {
+            RenameMealSectionSheet(meal: meal, vm: vm)
         }
     }
 
@@ -47,6 +51,18 @@ struct MealSectionCard: View {
                 Text("\(meal.totalCalories) kcal")
                     .font(AppFont.caption)
                     .foregroundColor(.white.opacity(0.5))
+            }
+
+            Menu {
+                Button("Rename") { showRenameMeal = true }
+                Button("Copy from yesterday") { vm.copyMealFromYesterday(to: meal.id) }
+                Button("Clear meal", role: .destructive) { vm.clearEntries(from: meal.id) }
+                Button("Delete meal", role: .destructive) { vm.deleteMealSection(id: meal.id) }
+            } label: {
+                Image(systemName: "ellipsis")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundColor(.white.opacity(0.45))
+                    .frame(width: 28, height: 28)
             }
 
             Button {
@@ -148,6 +164,9 @@ private struct FoodEntryRow: View {
 
     private var macroSummary: String {
         var parts: [String] = []
+        if let amount = entry.amountGrams, amount > 0 {
+            parts.append("\(String(format: "%.0f", amount))g")
+        }
         if entry.protein > 0 { parts.append("P \(String(format: "%.0f", entry.protein))g") }
         if entry.fat > 0     { parts.append("F \(String(format: "%.0f", entry.fat))g") }
         if entry.carbs > 0   { parts.append("C \(String(format: "%.0f", entry.carbs))g") }
@@ -163,13 +182,18 @@ struct AddFoodEntrySheet: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var name = ""
+    @State private var amountText = ""
     @State private var caloriesText = ""
+    @State private var caloriesPer100Text = ""
     @State private var proteinText = ""
     @State private var fatText = ""
     @State private var carbsText = ""
+    @State private var proteinPer100Text = ""
+    @State private var fatPer100Text = ""
+    @State private var carbsPer100Text = ""
     @FocusState private var focusedField: Field?
 
-    private enum Field { case name, calories, protein, fat, carbs }
+    private enum Field { case name, amount, calories, caloriesPer100, protein, fat, carbs, proteinPer100, fatPer100, carbsPer100 }
 
     private var canAdd: Bool {
         !name.trimmingCharacters(in: .whitespaces).isEmpty &&
@@ -186,11 +210,24 @@ struct AddFoodEntrySheet: View {
                             .focused($focusedField, equals: .name)
                     }
 
-                    inputCard(title: "Calories (kcal)") {
-                        TextField("0", text: $caloriesText)
-                            .keyboardType(.numberPad)
-                            .foregroundColor(.white)
-                            .focused($focusedField, equals: .calories)
+                    if !vm.recentFoods.isEmpty {
+                        recentFoodsSection
+                    }
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Serving")
+                            .font(AppFont.caption)
+                            .foregroundColor(.white.opacity(0.4))
+                            .padding(.horizontal, 4)
+                        VStack(spacing: 0) {
+                            inputRow(label: "Amount", placeholder: "0", unit: "g", text: $amountText, field: .amount, keyboard: .decimalPad)
+                            Divider().background(Color.white.opacity(0.08))
+                            inputRow(label: "Calories", placeholder: "0", unit: "kcal", text: $caloriesText, field: .calories, keyboard: .numberPad)
+                            Divider().background(Color.white.opacity(0.08))
+                            inputRow(label: "Per 100g", placeholder: "0", unit: "kcal", text: $caloriesPer100Text, field: .caloriesPer100, keyboard: .numberPad)
+                        }
+                        .background(Color.backbutton)
+                        .cornerRadius(16)
                     }
 
                     VStack(alignment: .leading, spacing: 8) {
@@ -205,6 +242,12 @@ struct AddFoodEntrySheet: View {
                             macroField(label: "Fat (g)", text: $fatText, field: .fat)
                             Divider().background(Color.white.opacity(0.08))
                             macroField(label: "Carbs (g)", text: $carbsText, field: .carbs)
+                            Divider().background(Color.white.opacity(0.08))
+                            macroField(label: "Protein / 100g", text: $proteinPer100Text, field: .proteinPer100)
+                            Divider().background(Color.white.opacity(0.08))
+                            macroField(label: "Fat / 100g", text: $fatPer100Text, field: .fatPer100)
+                            Divider().background(Color.white.opacity(0.08))
+                            macroField(label: "Carbs / 100g", text: $carbsPer100Text, field: .carbsPer100)
                         }
                         .background(Color.backbutton)
                         .cornerRadius(16)
@@ -226,6 +269,8 @@ struct AddFoodEntrySheet: View {
                 .padding(16)
             }
             .background(Color.backmain)
+            .scrollDismissesKeyboard(.interactively)
+            .dismissKeyboardOnTap()
             .navigationTitle("Add Food")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -233,8 +278,53 @@ struct AddFoodEntrySheet: View {
                     Button("Cancel") { dismiss() }
                         .foregroundColor(.white.opacity(0.6))
                 }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        focusedField = nil
+                    }
+                    .foregroundColor(.currentday)
+                }
             }
             .onAppear { focusedField = .name }
+            .onChange(of: amountText) { _, _ in updateCalculatedValues() }
+            .onChange(of: caloriesPer100Text) { _, _ in updateCalculatedValues() }
+            .onChange(of: proteinPer100Text) { _, _ in updateCalculatedValues() }
+            .onChange(of: fatPer100Text) { _, _ in updateCalculatedValues() }
+            .onChange(of: carbsPer100Text) { _, _ in updateCalculatedValues() }
+        }
+    }
+
+    private var recentFoodsSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Recent foods")
+                .font(AppFont.caption)
+                .foregroundColor(.white.opacity(0.4))
+                .padding(.horizontal, 4)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(vm.recentFoods.prefix(8)) { food in
+                        Button {
+                            applyRecentFood(food)
+                        } label: {
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(food.name)
+                                    .font(AppFont.caption)
+                                    .foregroundColor(.white)
+                                    .lineLimit(1)
+                                Text("\(food.calories) kcal")
+                                    .font(.system(size: 11))
+                                    .foregroundColor(.weekDay)
+                            }
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 9)
+                            .background(Color.backbutton)
+                            .cornerRadius(12)
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -253,17 +343,32 @@ struct AddFoodEntrySheet: View {
     }
 
     private func macroField(label: String, text: Binding<String>, field: Field) -> some View {
+        inputRow(label: label, placeholder: "0", unit: "g", text: text, field: field, keyboard: .decimalPad)
+    }
+
+    private func inputRow(
+        label: String,
+        placeholder: String,
+        unit: String,
+        text: Binding<String>,
+        field: Field,
+        keyboard: UIKeyboardType
+    ) -> some View {
         HStack {
             Text(label)
                 .font(AppFont.subheadline)
                 .foregroundColor(.white.opacity(0.6))
             Spacer()
-            TextField("0", text: text)
-                .keyboardType(.decimalPad)
+            TextField(placeholder, text: text)
+                .keyboardType(keyboard)
                 .multilineTextAlignment(.trailing)
                 .foregroundColor(.white)
                 .focused($focusedField, equals: field)
                 .frame(width: 80)
+            Text(unit)
+                .font(AppFont.caption)
+                .foregroundColor(.white.opacity(0.35))
+                .frame(width: 34, alignment: .trailing)
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
@@ -273,12 +378,51 @@ struct AddFoodEntrySheet: View {
         let entry = FoodEntry(
             name: name.trimmingCharacters(in: .whitespaces),
             calories: Int(caloriesText) ?? 0,
+            amountGrams: parseDouble(amountText),
             protein: Double(proteinText.replacingOccurrences(of: ",", with: ".")) ?? 0,
             fat:     Double(fatText.replacingOccurrences(of: ",", with: ".")) ?? 0,
             carbs:   Double(carbsText.replacingOccurrences(of: ",", with: ".")) ?? 0
         )
         vm.addEntry(entry, to: mealID)
         dismiss()
+    }
+
+    private func updateCalculatedValues() {
+        guard let amount = parseDouble(amountText), amount > 0 else { return }
+
+        if let caloriesPer100 = parseDouble(caloriesPer100Text), caloriesPer100 > 0 {
+            caloriesText = "\(Int((caloriesPer100 * amount / 100).rounded()))"
+        }
+        if let proteinPer100 = parseDouble(proteinPer100Text), proteinPer100 > 0 {
+            proteinText = formatMacro(proteinPer100 * amount / 100)
+        }
+        if let fatPer100 = parseDouble(fatPer100Text), fatPer100 > 0 {
+            fatText = formatMacro(fatPer100 * amount / 100)
+        }
+        if let carbsPer100 = parseDouble(carbsPer100Text), carbsPer100 > 0 {
+            carbsText = formatMacro(carbsPer100 * amount / 100)
+        }
+    }
+
+    private func applyRecentFood(_ food: FoodEntry) {
+        name = food.name
+        amountText = food.amountGrams.map(formatMacro) ?? ""
+        caloriesText = "\(food.calories)"
+        proteinText = food.protein > 0 ? formatMacro(food.protein) : ""
+        fatText = food.fat > 0 ? formatMacro(food.fat) : ""
+        carbsText = food.carbs > 0 ? formatMacro(food.carbs) : ""
+        focusedField = nil
+    }
+
+    private func parseDouble(_ value: String) -> Double? {
+        Double(value.replacingOccurrences(of: ",", with: "."))
+    }
+
+    private func formatMacro(_ value: Double) -> String {
+        if value.truncatingRemainder(dividingBy: 1) == 0 {
+            return String(format: "%.0f", value)
+        }
+        return String(format: "%.1f", value)
     }
 }
 
@@ -323,12 +467,75 @@ struct AddMealSectionSheet: View {
             }
             .padding(16)
             .background(Color.backmain)
+            .dismissKeyboardOnTap()
             .navigationTitle("New Meal")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                         .foregroundColor(.white.opacity(0.6))
+                }
+            }
+            .onAppear { focused = true }
+        }
+        .presentationDetents([.fraction(0.35)])
+        .presentationDragIndicator(.visible)
+    }
+}
+
+private struct RenameMealSectionSheet: View {
+    let meal: MealSection
+    @ObservedObject var vm: FoodTrackerViewModel
+    @Environment(\.dismiss) private var dismiss
+    @State private var title: String
+    @FocusState private var focused: Bool
+
+    init(meal: MealSection, vm: FoodTrackerViewModel) {
+        self.meal = meal
+        self.vm = vm
+        _title = State(initialValue: meal.title)
+    }
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 16) {
+                TextField("Meal name", text: $title)
+                    .foregroundColor(.white)
+                    .focused($focused)
+                    .padding(14)
+                    .background(Color.backbutton)
+                    .cornerRadius(16)
+
+                Button {
+                    vm.renameMealSection(id: meal.id, title: title)
+                    dismiss()
+                } label: {
+                    Text("Save")
+                        .font(AppFont.body)
+                        .foregroundColor(.black)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 16)
+                        .background(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? Color.currentday.opacity(0.3) : Color.currentday)
+                        .cornerRadius(16)
+                }
+                .disabled(title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+
+                Spacer()
+            }
+            .padding(16)
+            .background(Color.backmain)
+            .dismissKeyboardOnTap()
+            .navigationTitle("Rename Meal")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                        .foregroundColor(.white.opacity(0.6))
+                }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") { focused = false }
+                        .foregroundColor(.currentday)
                 }
             }
             .onAppear { focused = true }

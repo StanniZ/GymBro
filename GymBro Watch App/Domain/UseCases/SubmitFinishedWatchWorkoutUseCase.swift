@@ -14,7 +14,7 @@ struct SubmitFinishedWatchWorkoutUseCase {
         self.repository = repository
     }
 
-    func execute(session: WatchWorkoutSession) async throws {
-        try await repository.submitFinishedWorkout(session)
+    func execute(session: WatchWorkoutSession, activeCalories: Double?) async throws {
+        try await repository.submitFinishedWorkout(session, activeCalories: activeCalories)
     }
 }

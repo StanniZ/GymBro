@@ -14,10 +14,12 @@ struct MainTabView: View {
    
    var body: some View {
        ZStack(alignment: .bottom) {
+           Color.backmain.ignoresSafeArea()
            content
                .frame(maxWidth: .infinity, maxHeight: .infinity)
            backgroundTab
        }
+       .background(Color.backmain.ignoresSafeArea())
        .ignoresSafeArea(edges: .bottom)
    }
     

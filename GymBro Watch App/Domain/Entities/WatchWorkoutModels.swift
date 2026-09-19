@@ -31,6 +31,7 @@ struct WatchWorkoutTemplate: Identifiable, Hashable {
 
 struct WatchExercisePlan: Identifiable, Hashable {
     let id: UUID
+    let exerciseID: Int
     let name: String
     let muscleGroup: String
     let targetSets: Int
@@ -39,6 +40,7 @@ struct WatchExercisePlan: Identifiable, Hashable {
 
     nonisolated init(
         id: UUID = UUID(),
+        exerciseID: Int = 0,
         name: String,
         muscleGroup: String,
         targetSets: Int,
@@ -46,6 +48,7 @@ struct WatchExercisePlan: Identifiable, Hashable {
         defaultReps: Int
     ) {
         self.id = id
+        self.exerciseID = exerciseID
         self.name = name
         self.muscleGroup = muscleGroup
         self.targetSets = targetSets
@@ -78,6 +81,7 @@ struct WatchWorkoutSession: Identifiable, Hashable {
 
 struct WatchSessionExercise: Identifiable, Hashable {
     let id: UUID
+    let exerciseID: Int
     let name: String
     let muscleGroup: String
     var isFinished: Bool
@@ -85,6 +89,7 @@ struct WatchSessionExercise: Identifiable, Hashable {
 
     nonisolated init(plan: WatchExercisePlan) {
         self.id = plan.id
+        self.exerciseID = plan.exerciseID
         self.name = plan.name
         self.muscleGroup = plan.muscleGroup
         self.isFinished = false

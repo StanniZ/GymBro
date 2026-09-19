@@ -33,6 +33,28 @@ final class CoreDataWorkoutSessionProvider: WorkoutSessionProviderProtocol, Stat
             try bgContext.save()
         }
     }
+
+    func saveFinishedSession(_ session: TrainingSessionModel) async throws {
+        let bgContext = container.newBackgroundContext()
+        try await bgContext.perform {
+            let request: NSFetchRequest<TrainingSessionEntity> = TrainingSessionEntity.fetchRequest()
+            request.fetchLimit = 1
+            request.predicate = NSPredicate(format: "id == %@", session.id as CVarArg)
+
+            if let existing = try bgContext.fetch(request).first {
+                bgContext.delete(existing)
+            }
+
+            var finished = session
+            finished.isFinished = true
+            if finished.finishedAt == nil {
+                finished.finishedAt = Date()
+            }
+
+            _ = TrainingSessionMapper.toEntity(finished, context: bgContext)
+            try bgContext.save()
+        }
+    }
     
     
     func getAllFinishedSessions() async throws -> [TrainingSessionModel] {
@@ -64,4 +86,3 @@ final class CoreDataWorkoutSessionProvider: WorkoutSessionProviderProtocol, Stat
         }
     }
 }
-

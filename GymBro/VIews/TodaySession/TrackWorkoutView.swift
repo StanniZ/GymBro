@@ -20,25 +20,18 @@ struct TrackWorkoutView: View {
         ZStack {
             Color.backmain.ignoresSafeArea()
             VStack(spacing: 0) {
-                // Top bar
                 topBar
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
-
-                if sessionTimer.isRunning {
-                    timerDisplay
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 8)
-                }
-
-                statsStrip
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 12)
 
                 Divider().background(Color.white.opacity(0.06))
 
                 ScrollView(.vertical, showsIndicators: false) {
                     VStack(spacing: 12) {
+                        if sessionTimer.isRunning || sessionTimer.isPaused {
+                            timerDisplay
+                        }
+                        statsStrip
                         ForEach($viewModel.draftSession.exercises) { $exercise in
                             ExerciseList(exercise: $exercise) {
                                 viewModel.removeExercise(id: exercise.id)
@@ -46,11 +39,14 @@ struct TrackWorkoutView: View {
                         }
                         addExerciseButton
                     }
-                    .padding(16)
+                    .padding(.horizontal, 16)
+                    .padding(.top, 12)
                     .padding(.bottom, 24)
                 }
+                .scrollDismissesKeyboard(.interactively)
             }
         }
+        .dismissKeyboardOnTap()
         .navigationBarBackButtonHidden(true)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) { backButton }
@@ -66,7 +62,7 @@ struct TrackWorkoutView: View {
         .task {
             if historyVM.sessions.isEmpty { await historyVM.load() }
         }
-        .onChange(of: viewModel.state) { newState in
+        .onChange(of: viewModel.state) { _, newState in
             if newState == .saved {
                 sessionTimer.finishSession()
                 dismiss()
@@ -90,10 +86,10 @@ struct TrackWorkoutView: View {
         }
     }
 
-    // MARK: - Top bar (session name + action button)
+    // MARK: - Top bar
 
     private var topBar: some View {
-        HStack(alignment: .center) {
+        VStack(alignment: .leading, spacing: 10) {
             VStack(alignment: .leading, spacing: 4) {
                 Text("Workout session")
                     .font(AppFont.caption)
@@ -103,9 +99,10 @@ struct TrackWorkoutView: View {
                     .foregroundColor(.white)
                     .lineLimit(1)
             }
-            Spacer()
+
             actionButton
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
     // MARK: - Timer
@@ -118,15 +115,17 @@ struct TrackWorkoutView: View {
                     .font(.system(size: 48, weight: .bold, design: .monospaced))
                     .foregroundStyle(.white)
                 HStack(spacing: 5) {
-                    Circle().fill(Color.red).frame(width: 6, height: 6)
-                    Text("Session in progress")
+                    Circle()
+                        .fill(sessionTimer.isPaused ? Color.yellow : Color.red)
+                        .frame(width: 6, height: 6)
+                    Text(sessionTimer.isPaused ? "Session paused" : "Session in progress")
                         .font(AppFont.caption)
                         .foregroundColor(.white.opacity(0.4))
                 }
             }
             Spacer()
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 10)
     }
 
     // MARK: - Stats strip
@@ -182,8 +181,11 @@ struct TrackWorkoutView: View {
 
     @ViewBuilder
     private var actionButton: some View {
-        if sessionTimer.isRunning {
-            finishButton
+        if sessionTimer.isRunning || sessionTimer.isPaused {
+            HStack(spacing: 10) {
+                finishButton
+                pauseButton
+            }
         } else {
             startButton
         }
@@ -194,19 +196,29 @@ struct TrackWorkoutView: View {
             viewModel.startSession()
             sessionTimer.start()
         } label: {
-            HStack(spacing: 6) {
-                Image(systemName: "play.circle.fill")
-                    .font(.system(size: 28))
-                    .foregroundColor(.currentday)
-                Text("Start")
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(.white)
-            }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 8)
-            .background(Color.currentday.opacity(0.12))
-            .cornerRadius(20)
+            actionButtonLabel(
+                title: "Start",
+                icon: "play.fill",
+                color: .currentday
+            )
         }
+    }
+
+    private var pauseButton: some View {
+        Button {
+            if sessionTimer.isRunning {
+                sessionTimer.pause()
+            } else {
+                sessionTimer.start()
+            }
+        } label: {
+            actionButtonLabel(
+                title: sessionTimer.isRunning ? "Pause" : "Resume",
+                icon: sessionTimer.isRunning ? "pause.fill" : "play.fill",
+                color: .yellow
+            )
+        }
+        .disabled(viewModel.state == .saving)
     }
 
     @ViewBuilder
@@ -214,30 +226,54 @@ struct TrackWorkoutView: View {
         Button {
             viewModel.finishSession(elapsedSeconds: sessionTimer.elapsedTime)
         } label: {
-            HStack(spacing: 6) {
-                switch viewModel.state {
-                case .ready:
-                    Image(systemName: "stop.circle.fill")
-                        .font(.system(size: 26)).foregroundColor(.red)
-                    Text("Finish").font(.system(size: 16, weight: .semibold)).foregroundColor(.white)
-                case .saving:
-                    ProgressView().tint(.currentday)
-                    Text("Saving…").font(.system(size: 16, weight: .semibold)).foregroundColor(.white)
-                case .saved:
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 26)).foregroundColor(.currentday)
-                    Text("Saved!").font(.system(size: 16, weight: .semibold)).foregroundColor(.white)
-                case .failed:
-                    Image(systemName: "exclamationmark.circle.fill")
-                        .font(.system(size: 26)).foregroundColor(.red)
-                    Text("Retry").font(.system(size: 16, weight: .semibold)).foregroundColor(.white)
-                }
-            }
-            .padding(.horizontal, 14)
-            .padding(.vertical, 8)
-            .background(Color.red.opacity(0.12))
-            .cornerRadius(20)
+            finishButtonLabel
         }
         .disabled(viewModel.state == .saving)
+    }
+
+    @ViewBuilder
+    private var finishButtonLabel: some View {
+        switch viewModel.state {
+        case .ready:
+            actionButtonLabel(title: "Finish", icon: "stop.fill", color: .red)
+        case .saving:
+            actionButtonLabel(title: "Saving", icon: nil, color: .currentday, showsProgress: true)
+        case .saved:
+            actionButtonLabel(title: "Saved", icon: "checkmark", color: .currentday)
+        case .failed:
+            actionButtonLabel(title: "Retry", icon: "exclamationmark", color: .red)
+        }
+    }
+
+    private func actionButtonLabel(
+        title: String,
+        icon: String?,
+        color: Color,
+        showsProgress: Bool = false
+    ) -> some View {
+        HStack(spacing: 6) {
+            if showsProgress {
+                ProgressView()
+                    .tint(color)
+                    .scaleEffect(0.8)
+            } else if let icon {
+                Image(systemName: icon)
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundColor(color)
+            }
+
+            Text(title)
+                .font(.system(size: 14, weight: .semibold))
+                .foregroundColor(.white)
+                .lineLimit(1)
+        }
+        .frame(width: 104, height: 42)
+        .background(color.opacity(0.14))
+        .overlay(
+            RoundedRectangle(cornerRadius: 16)
+                .stroke(color.opacity(0.28), lineWidth: 0.8)
+        )
+        .cornerRadius(16)
+        .contentShape(RoundedRectangle(cornerRadius: 16))
     }
 }

@@ -13,19 +13,26 @@ final class WatchWorkoutViewModel: ObservableObject {
     @Published private(set) var templates: [WatchWorkoutTemplate] = []
     @Published var activeSession: WatchWorkoutSession?
     @Published private(set) var syncStatus: String = ""
+    @Published private(set) var healthMetrics = WatchWorkoutHealthMetrics()
 
     private let loadTemplatesUseCase: LoadWatchWorkoutTemplatesUseCase
     private let submitFinishedWorkoutUseCase: SubmitFinishedWatchWorkoutUseCase
+    private let healthService: WatchWorkoutHealthService
 
-    init(repository: WatchWorkoutRepository) {
+    init(repository: WatchWorkoutRepository, healthService: WatchWorkoutHealthService) {
         self.loadTemplatesUseCase = LoadWatchWorkoutTemplatesUseCase(repository: repository)
         self.submitFinishedWorkoutUseCase = SubmitFinishedWatchWorkoutUseCase(repository: repository)
+        self.healthService = healthService
+        self.healthService.onMetricsUpdated = { [weak self] metrics in
+            self?.healthMetrics = metrics
+        }
     }
 
     convenience init() {
         let connectivityClient = WatchConnectivityClient()
         let repository = DefaultWatchWorkoutRepository(connectivityClient: connectivityClient)
-        self.init(repository: repository)
+        let healthService = WatchWorkoutHealthService()
+        self.init(repository: repository, healthService: healthService)
     }
 
     var hasActiveWorkout: Bool {
@@ -40,13 +47,13 @@ final class WatchWorkoutViewModel: ObservableObject {
     }
 
     var heartRateText: String {
-        guard activeSession != nil else { return "--" }
-        return activeSession?.isPaused == true ? "--" : "128"
+        guard activeSession?.isPaused == false, let heartRate = healthMetrics.heartRate else { return "--" }
+        return "\(Int(heartRate.rounded()))"
     }
 
     var activeCaloriesText: String {
-        guard activeSession != nil else { return "0" }
-        return "\(max(elapsedSeconds() / 12, 0))"
+        guard let activeEnergy = healthMetrics.activeEnergy else { return "--" }
+        return "\(Int(activeEnergy.rounded()))"
     }
 
     func loadTemplates() async {
@@ -60,7 +67,13 @@ final class WatchWorkoutViewModel: ObservableObject {
     }
 
     func startWorkout(_ template: WatchWorkoutTemplate) {
-        activeSession = WatchWorkoutSession(template: template)
+        let session = WatchWorkoutSession(template: template)
+        activeSession = session
+        healthMetrics = WatchWorkoutHealthMetrics()
+
+        Task {
+            await healthService.startWorkout(at: session.startedAt)
+        }
     }
 
     func finishWorkout() {
@@ -68,8 +81,9 @@ final class WatchWorkoutViewModel: ObservableObject {
         activeSession = nil
 
         Task {
+            let metrics = await healthService.finishWorkout()
             do {
-                try await submitFinishedWorkoutUseCase.execute(session: session)
+                try await submitFinishedWorkoutUseCase.execute(session: session, activeCalories: metrics.activeEnergy)
                 syncStatus = "Workout queued for iPhone"
             } catch {
                 syncStatus = "Workout saved on Watch"
@@ -86,9 +100,11 @@ final class WatchWorkoutViewModel: ObservableObject {
             }
             session.pausedAt = nil
             session.isPaused = false
+            healthService.resumeWorkout()
         } else {
             session.pausedAt = Date()
             session.isPaused = true
+            healthService.pauseWorkout()
         }
 
         activeSession = session

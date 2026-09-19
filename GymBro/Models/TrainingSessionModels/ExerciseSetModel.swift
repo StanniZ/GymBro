@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct ExerciseSetModel: Identifiable {
+struct ExerciseSetModel: Identifiable, Codable, Equatable {
     var id: UUID
     var reps: Int
     var weightKg: Double

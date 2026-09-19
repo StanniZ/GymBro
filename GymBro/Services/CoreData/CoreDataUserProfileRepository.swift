@@ -48,7 +48,7 @@ final class CoreDataUserProfileRepository: UserProfileRepository {
         entity.age = Int16(userProfile.age)
         entity.weight = Double(userProfile.weight)
         entity.height = Int16(userProfile.height)
-        entity.gender = userProfile.gender.displayName
+        entity.gender = userProfile.gender.rawValue
         // photoPath is not in the CoreData model — persisted via UserDefaults in OnboardingViewModel
         
         try context.save()

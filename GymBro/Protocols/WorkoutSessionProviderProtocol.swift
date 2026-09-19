@@ -11,6 +11,8 @@ protocol WorkoutSessionProviderProtocol {
     func saveTodaysSession(_ session: TrainingSessionModel) async throws
     
     func finishTodaysSession(_ session: TrainingSessionModel) async throws
+
+    func saveFinishedSession(_ session: TrainingSessionModel) async throws
     
     func getAllFinishedSessions() async throws -> [TrainingSessionModel]
     

@@ -6,19 +6,22 @@ struct FoodTracker: View {
     @Binding var selectedTab: Int
 
     @State private var showAddMeal = false
+    @State private var showRepeatYesterdayWarning = false
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     header
+                    dateControls
                     if foodVM.targets != nil {
                         NutritionProgressCard(vm: foodVM)
-                        mealsSection
-                        addMealButton
                     } else {
                         noProfileCard
                     }
+                    quickActions
+                    mealsSection
+                    addMealButton
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 8)
@@ -34,6 +37,14 @@ struct FoodTracker: View {
         }
         .sheet(isPresented: $showAddMeal) {
             AddMealSectionSheet(vm: foodVM)
+        }
+        .alert("Replace current food log?", isPresented: $showRepeatYesterdayWarning) {
+            Button("Cancel", role: .cancel) {}
+            Button("Repeat Yesterday", role: .destructive) {
+                foodVM.repeatYesterday()
+            }
+        } message: {
+            Text("This will erase the food already logged for \(dateTitle) and replace it with yesterday's meals.")
         }
     }
 
@@ -53,6 +64,83 @@ struct FoodTracker: View {
             caloriesSummaryBadge
         }
         .padding(.top, 4)
+    }
+
+    private var dateControls: some View {
+        HStack(spacing: 10) {
+            Button {
+                foodVM.moveSelectedDate(by: -1)
+            } label: {
+                Image(systemName: "chevron.left")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(width: 38, height: 38)
+                    .background(Color.backbutton)
+                    .cornerRadius(12)
+            }
+
+            Button {
+                foodVM.selectDate(Date())
+            } label: {
+                VStack(spacing: 2) {
+                    Text(dateTitle)
+                        .font(AppFont.subheadline)
+                        .foregroundColor(.white)
+                    Text(isToday ? "Today" : "Tap to return today")
+                        .font(AppFont.caption)
+                        .foregroundColor(isToday ? .currentday : .weekDay)
+                }
+                .frame(maxWidth: .infinity)
+                .frame(height: 38)
+                .background(Color.backbutton)
+                .cornerRadius(12)
+            }
+
+            Button {
+                foodVM.moveSelectedDate(by: 1)
+            } label: {
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.white)
+                    .frame(width: 38, height: 38)
+                    .background(Color.backbutton)
+                    .cornerRadius(12)
+            }
+        }
+    }
+
+    private var quickActions: some View {
+        HStack(spacing: 10) {
+            Button {
+                if foodVM.hasLoggedFood {
+                    showRepeatYesterdayWarning = true
+                } else {
+                    foodVM.repeatYesterday()
+                }
+            } label: {
+                quickActionLabel("Repeat yesterday", icon: "arrow.uturn.backward")
+            }
+            Button {
+                showAddMeal = true
+            } label: {
+                quickActionLabel("New meal", icon: "plus")
+            }
+        }
+    }
+
+    private func quickActionLabel(_ title: String, icon: String) -> some View {
+        HStack(spacing: 7) {
+            Image(systemName: icon)
+                .font(.system(size: 12, weight: .semibold))
+            Text(title)
+                .font(AppFont.caption)
+                .lineLimit(1)
+        }
+        .foregroundColor(.currentday)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 10)
+        .background(Color.currentday.opacity(0.1))
+        .cornerRadius(12)
     }
 
     private var caloriesSummaryBadge: some View {
@@ -150,6 +238,16 @@ struct FoodTracker: View {
     private var formattedDate: String {
         let df = DateFormatter()
         df.dateFormat = "EEEE, d MMMM"
-        return df.string(from: Date())
+        return df.string(from: foodVM.selectedDate)
+    }
+
+    private var dateTitle: String {
+        let df = DateFormatter()
+        df.dateFormat = "EEE, d MMM"
+        return df.string(from: foodVM.selectedDate)
+    }
+
+    private var isToday: Bool {
+        Calendar.current.isDateInToday(foodVM.selectedDate)
     }
 }

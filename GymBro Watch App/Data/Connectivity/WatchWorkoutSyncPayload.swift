@@ -33,6 +33,7 @@ struct WatchWorkoutTemplatePayload: Codable, Equatable, Identifiable {
 
 struct WatchExercisePlanPayload: Codable, Equatable, Identifiable {
     let id: UUID
+    let exerciseID: Int
     let name: String
     let muscleGroup: String
     let targetSets: Int
@@ -45,11 +46,13 @@ struct WatchFinishedWorkoutPayload: Codable, Equatable {
     let title: String
     let startedAt: Date
     let finishedAt: Date
+    let activeCalories: Int?
     let exercises: [WatchFinishedExercisePayload]
 }
 
 struct WatchFinishedExercisePayload: Codable, Equatable, Identifiable {
     let id: UUID
+    let exerciseID: Int
     let name: String
     let muscleGroup: String
     let isFinished: Bool
@@ -90,6 +93,7 @@ extension WatchExercisePlan {
     nonisolated init(payload: WatchExercisePlanPayload) {
         self.init(
             id: payload.id,
+            exerciseID: payload.exerciseID,
             name: payload.name,
             muscleGroup: payload.muscleGroup,
             targetSets: payload.targetSets,
@@ -101,6 +105,7 @@ extension WatchExercisePlan {
     var payload: WatchExercisePlanPayload {
         WatchExercisePlanPayload(
             id: id,
+            exerciseID: exerciseID,
             name: name,
             muscleGroup: muscleGroup,
             targetSets: targetSets,
@@ -111,15 +116,17 @@ extension WatchExercisePlan {
 }
 
 extension WatchWorkoutSession {
-    func finishedPayload(finishedAt: Date = Date()) -> WatchFinishedWorkoutPayload {
+    func finishedPayload(finishedAt: Date = Date(), activeCalories: Int? = nil) -> WatchFinishedWorkoutPayload {
         WatchFinishedWorkoutPayload(
             id: id,
             title: title,
             startedAt: startedAt,
             finishedAt: finishedAt,
+            activeCalories: activeCalories,
             exercises: exercises.map { exercise in
                 WatchFinishedExercisePayload(
                     id: exercise.id,
+                    exerciseID: exercise.exerciseID,
                     name: exercise.name,
                     muscleGroup: exercise.muscleGroup,
                     isFinished: exercise.isFinished,

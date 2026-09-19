@@ -3,15 +3,18 @@ import Foundation
 struct FoodEntry: Identifiable, Codable {
     let id: UUID
     var name: String
+    var amountGrams: Double?
     var calories: Int
     var protein: Double
     var fat: Double
     var carbs: Double
 
     init(id: UUID = UUID(), name: String, calories: Int,
+         amountGrams: Double? = nil,
          protein: Double = 0, fat: Double = 0, carbs: Double = 0) {
         self.id = id
         self.name = name
+        self.amountGrams = amountGrams
         self.calories = calories
         self.protein = protein
         self.fat = fat

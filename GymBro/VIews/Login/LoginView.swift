@@ -35,6 +35,7 @@ struct LoginView: View {
         }
         .padding(26)
         .background(.backmain)
+        .dismissKeyboardOnTap()
     }
     
     private var header: some View {

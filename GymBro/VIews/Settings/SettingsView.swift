@@ -9,7 +9,6 @@ import SwiftUI
 struct SettingsView: View {
     @EnvironmentObject var viewModel: SettingsViewModel
     @EnvironmentObject var profileVM: OnboardingViewModel
-    @EnvironmentObject private var authSession: AuthSession
 
     private let configuration = SettingsConfigurationBuilder.build()
 
@@ -18,7 +17,6 @@ struct SettingsView: View {
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 24) {
                     profileCard
-                    authCard
                     sectionsStack
                 }
                 .padding(.horizontal, 16)
@@ -89,65 +87,6 @@ struct SettingsView: View {
             .padding(.vertical, 3)
             .background(Color.backmain)
             .cornerRadius(6)
-    }
-
-    // MARK: - Authentication
-
-    private var authCard: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack(spacing: 12) {
-                ZStack {
-                    RoundedRectangle(cornerRadius: 8)
-                        .fill(authIconColor.opacity(0.15))
-                        .frame(width: 36, height: 36)
-                    Image(systemName: authIconName)
-                        .font(.system(size: 16))
-                        .foregroundColor(authIconColor)
-                }
-
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(authTitle)
-                        .font(AppFont.subheadline)
-                        .foregroundColor(.white)
-                    Text(authSession.accountDescription)
-                        .font(AppFont.caption)
-                        .foregroundColor(.weekDay)
-                        .lineLimit(2)
-                }
-
-                Spacer()
-            }
-
-            switch authSession.state {
-            case .authenticated:
-                Button(action: { authSession.signOut() }) {
-                    Text("Sign Out")
-                        .font(AppFont.body)
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 14)
-                        .background(Color.red)
-                        .cornerRadius(14)
-                }
-            default:
-                AppleSignInButtonView()
-            }
-        }
-        .padding(16)
-        .background(Color.backbutton)
-        .cornerRadius(16)
-    }
-
-    private var authTitle: String {
-        authSession.isAuthenticated ? "Apple Account" : "Sign in with Apple"
-    }
-
-    private var authIconName: String {
-        authSession.isAuthenticated ? "checkmark.seal.fill" : "applelogo"
-    }
-
-    private var authIconColor: Color {
-        authSession.isAuthenticated ? .green : .currentday
     }
 
     // MARK: - Sections
